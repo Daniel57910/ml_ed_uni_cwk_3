@@ -1,5 +1,0 @@
-Understand structure of file with respect to images
-Write down structure of file wrt images
-Understand classification options; read paper
-Begin attention learning; begin putting together model
-
