@@ -1,0 +1,26 @@
+Understand structure of file with respect to images
+Write down structure of file wrt images
+Understand classification options; read paper
+Begin attention learning; begin putting together model
+
+https://www.youtube.com/watch?v=SysgYptB198&ab_channel=DeepLearningAI
+
+
+Begin understanding attention layer and transformers
+https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html
+https://towardsdatascience.com/illustrated-self-attention-2d627e33b20a
+https://lilianweng.github.io/lil-log/2020/04/07/the-transformer-family.html
+
+UML Code
+https://github.com/0aqz0/pytorch-attention-mechanism/blob/master/rnn-with-attention.py
+
+Begin implementation
+- Get data loaded
+- Understand data directory and structure
+- Setup simple CNN
+- Setup simple CNN w attention 
+
+ 
+Launch different EC2 that supports opening images
+Put together UML of preprocessing/data generation 
+Begin model development 
