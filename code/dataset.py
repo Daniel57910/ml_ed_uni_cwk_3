@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 IMAGE_PATH = 'images'
 META_PATH = 'nus_wide'
+from torchvision import transforms
 
 class NusDataset:
     def __init__(self, data_path, anno_path, transforms):
@@ -31,8 +32,9 @@ class NusDataset:
         img_path = os.path.join(self.data_path, self.imgs[item])
         img = Image.open(img_path)
         img = img.resize((180, 180))
-        img = np.array(img)
-        print(img.shape)
+        convert_tensor = transforms.ToTensor()
+
+        img = convert_tensor(img)
         if self.transforms is not None:
             img = self.transforms(img)
         return img, anno
