@@ -24,8 +24,9 @@ mkdir -p ${TMP}/datasets/
 export DATASET_DIR=${TMP}/datasets/
 # Activate the relevant virtual environment:
 
-source /home/${STUDENT_ID}/miniconda3/bin/activate mlp
-cd ..
+# source /home/${STUDENT_ID}/miniconda3/bin/activate mlp
+
 
 call_command="torchrun $1"
-echo $call_command
+echo "Running $call_command"
+torchrun code $1
