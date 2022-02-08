@@ -32,6 +32,8 @@ import time
 import tqdm
 
 img_folder = 'images'
+chunk_count = 1
+print("Running data implementation algorithm")
 if not os.path.exists(img_folder):
     def download_file_from_google_drive(id, destination):
         def get_confirm_token(response):
@@ -43,9 +45,10 @@ if not os.path.exists(img_folder):
         def save_response_content(response, destination):
             CHUNK_SIZE = 32768
             with open(destination, "wb") as f:
-                for chunk in response.iter_content(CHUNK_SIZE):
-                    if chunk:  # filter out keep-alive new chunks
+                for chunk in tqdm.tqdm(iterable=response.iter_content(chunk_size=CHUNK_SIZE), unit='KB'):
+                    if chunk:  # filter out keep-alive new chunk
                         f.write(chunk)
+                        f.flush()
 
         URL = "https://docs.google.com/uc?export=download"
         session = requests.Session()
@@ -64,5 +67,3 @@ if not os.path.exists(img_folder):
     with tarfile.open(path_to_tar_file) as tar_ref:
         tar_ref.extractall(os.path.dirname(img_folder))
     os.remove(path_to_tar_file)
-
-
