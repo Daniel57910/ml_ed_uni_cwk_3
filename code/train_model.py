@@ -74,7 +74,7 @@ model = Resnext50(
     NUM_CLASSES
 ).to(device)
 
-criterion = nn.CrossEntropyLoss()
+criterion = nn.BCELoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 logger = SummaryWriter("runs/cnn_attention_{:%Y-%m-%d_%H-%M-%S}".format(datetime.now()))
 
