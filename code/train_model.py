@@ -53,7 +53,7 @@ learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
 batch_size = 32
 save_freq = 1 # Save checkpoint frequency (epochs)
 test_freq = 200 # Test model frequency (iterations)
-max_epoch_number = 5 # Number of epochs for training
+max_epoch_number = 3 # Number of epochs for training
 # Note: on the small subset of data overfitting hap0ens after 30-35 epochs
 NUM_CLASSES = 27
 save_path = 'chekpoints/'
@@ -74,7 +74,7 @@ model = Resnext50(
     NUM_CLASSES
 ).to(device)
 
-criterion = nn.BCELoss()
+criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 logger = SummaryWriter("runs/cnn_attention_{:%Y-%m-%d_%H-%M-%S}".format(datetime.now()))
 
