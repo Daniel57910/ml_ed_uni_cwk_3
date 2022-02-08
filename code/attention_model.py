@@ -44,3 +44,21 @@ class Resnext50(nn.Module):
             elif isinstance(m, nn.Linear):
                 nn.init.normal_(m.weight, 0, 0.01)
                 nn.init.constant_(m.bias, 0)
+
+
+class BaseModel(nn.Module):
+    def __init__(self, n_classes) -> None:
+        super().__init__()
+        self.conv_1 = self._make_layer(3, 64, 3)
+
+    def _make_layer(self, input_channels, out_features, kernel_size):
+        return nn.Sequential(*[
+            nn.Conv2d(input_channels, out_features, kernel_size),
+            nn.BatchNorm2d(out_features, affine=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.ReLU(inplace=True)
+        ])
+
+    def forward(self, x):
+        output = self.conv_1(x)
+        return output
