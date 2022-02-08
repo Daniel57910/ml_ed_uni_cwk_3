@@ -91,7 +91,7 @@ for i in range(0, max_epoch_number):
 
         model_result = model(imgs)
         print(f"Model fitted on data {i}")
-        print(model_result)
+        print(model_result.shape)
     #     loss = criterion(model_result, targets.type(torch.float))
 
     #     batch_loss_value = loss.item()
