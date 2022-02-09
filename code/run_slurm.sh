@@ -33,4 +33,5 @@ export DATASET_DIR=${TMP}/datasets/
 # Activate the relevant virtual environment:
 
 source /home/${STUDENT_ID}/miniconda3/bin/activate mlp
-python code/train_model.py
+nvidia-smi
+# python code/train_model.py
