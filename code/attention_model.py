@@ -50,6 +50,7 @@ class BaseModel(nn.Module):
     def __init__(self, n_classes) -> None:
         super().__init__()
         self.conv_1 = self._make_layer(3, 64, 3)
+        self.conv_2 = self._make_layer(64, 64, 3)
 
     def _make_layer(self, input_channels, out_features, kernel_size):
         return nn.Sequential(*[
@@ -60,5 +61,6 @@ class BaseModel(nn.Module):
         ])
 
     def forward(self, x):
-        output = self.conv_1(x)
-        return output
+        output_1 = self.conv_1(x)
+        output_2 = self.conv_2(x)
+        return output_2

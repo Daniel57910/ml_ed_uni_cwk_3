@@ -58,76 +58,79 @@ max_epoch_number = 3 # Number of epochs for training
 NUM_CLASSES = 27
 save_path = 'chekpoints/'
 
-# dataset_val = NusDataset(
-#     IMAGE_PATH, os.path.join(META_PATH, 'small_test.json'), None)
+dataset_val = NusDataset(
+    IMAGE_PATH, os.path.join(META_PATH, 'small_test.json'), None)
 
-# dataset_train = NusDataset(
-#     IMAGE_PATH, os.path.join(META_PATH, 'small_train.json'), None)
+dataset_train = NusDataset(
+    IMAGE_PATH, os.path.join(META_PATH, 'small_train.json'), None)
 
-# train_dataloader = DataLoader(dataset_train, batch_size=60, shuffle=True)
-# test_dataloader = DataLoader(dataset_val, batch_size=60, shuffle=True)
+train_dataloader = DataLoader(dataset_train, batch_size=60, shuffle=True)
+test_dataloader = DataLoader(dataset_val, batch_size=60, shuffle=True)
 
-# num_train_batches = int(np.ceil(len(dataset_train) / batch_size))
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+num_train_batches = int(np.ceil(len(dataset_train) / batch_size))
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 print(torch.cuda.is_available())
 
-# model = BaseModel(
-#    NUM_CLASSES
-# ).to(device)
+model = BaseModel(
+   NUM_CLASSES
+).to(device)
 
-# criterion = nn.CrossEntropyLoss()
-# optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-# logger = SummaryWriter("runs/cnn_attention_{:%Y-%m-%d_%H-%M-%S}".format(datetime.now()))
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+logger = SummaryWriter("runs/cnn_attention_{:%Y-%m-%d_%H-%M-%S}".format(datetime.now()))
 
-# epoch = 0
-# iteration = 0
-# for i in range(0, max_epoch_number):
-#     batch_losses = []
-#     for imgs, targets in train_dataloader:
-#         imgs, targets = imgs.to(device), targets.to(device)
+epoch = 0
+iteration = 0
+for i in range(0, max_epoch_number):
+    batch_losses = []
+    for index, (imgs, targets) in enumerate(train_dataloader):
+        imgs, targets = imgs.to(device), targets.to(device)
 
-#         optimizer.zero_grad()
+        optimizer.zero_grad()
 
-#         model_result = model(imgs)
+        model_result = model(imgs)
+        print(f"Model result: {model_result.shape}")
+        if index > 5:
+            print(f"End of index: {index}")
 #         print(f"Model fitted on data {i}")
 #         print(model_result.shape)
-    #     loss = criterion(model_result, targets.type(torch.float))
+#         loss = criterion(model_result, targets.type(torch.float))
 
-    #     batch_loss_value = loss.item()
-    #     loss.backward()
-    #     optimizer.step()
+#         batch_loss_value = loss.item()
+#         loss.backward()
+#         optimizer.step()
 
-    #     logger.add_scalar('train_loss', batch_loss_value, iteration)
-    #     batch_losses.append(batch_loss_value)
-    #     with torch.no_grad():
-    #         result = calculate_metrics(model_result.cpu().numpy(), targets.cpu().numpy())
-    #         for metric in result:
-    #             logger.add_scalar('train/' + metric, result[metric], iteration)
+#         logger.add_scalar('train_loss', batch_loss_value, iteration)
+#         batch_losses.append(batch_loss_value)
+#         with torch.no_grad():
+#             result = calculate_metrics(model_result.cpu().numpy(), targets.cpu().numpy())
+#             for metric in result:
+#                 logger.add_scalar('train/' + metric, result[metric], iteration)
 
-    #     if iteration % test_freq == 0:
-    #         model.eval()
-    #         with torch.no_grad():
-    #             model_result = []
-    #             targets = []
-    #             for imgs, batch_targets in test_dataloader:
-    #                 imgs = imgs.to(device)
-    #                 model_batch_result = model(imgs)
-    #                 model_result.extend(model_batch_result.cpu().numpy())
-    #                 targets.extend(batch_targets.cpu().numpy())
+#         if iteration % test_freq == 0:
+#             model.eval()
+#             with torch.no_grad():
+#                 model_result = []
+#                 targets = []
+#                 for imgs, batch_targets in test_dataloader:
+#                     imgs = imgs.to(device)
+#                     model_batch_result = model(imgs)
+#                     model_result.extend(model_batch_result.cpu().numpy())
+#                     targets.extend(batch_targets.cpu().numpy())
 
-    #         result = calculate_metrics(np.array(model_result), np.array(targets))
-    #         for metric in result:
-    #             logger.add_scalar('test/' + metric, result[metric], iteration)
+#             result = calculate_metrics(np.array(model_result), np.array(targets))
+#             for metric in result:
+#                 logger.add_scalar('test/' + metric, result[metric], iteration)
 
-    #         print(f"epoch {epoch} iter {iteration} micro {result['micro/f1']} macro {result['macro/f1']}")
-    #         model.train()
-    #     iteration += 1
+#             print(f"epoch {epoch} iter {iteration} micro {result['micro/f1']} macro {result['macro/f1']}")
+#             model.train()
+#         iteration += 1
 
-    # loss_value = np.mean(batch_losses)
-    # print("epoch:{:2d} iter:{:3d} train: loss:{:.3f}".format(epoch, iteration, loss_value))
-    # if epoch % save_freq == 0:
-    #     checkpoint_save(model, save_path, epoch)
+#     loss_value = np.mean(batch_losses)
+#     print("epoch:{:2d} iter:{:3d} train: loss:{:.3f}".format(epoch, iteration, loss_value))
+#     if epoch % save_freq == 0:
+#         checkpoint_save(model, save_path, epoch)
     # epoch += 1
     # if max_epoch_number < epoch:
     #     break
