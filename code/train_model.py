@@ -12,7 +12,7 @@ import torch
 from torch.utils.data import DataLoader
 from attention_model import Resnext50, BaseModel
 import torch.nn as nn
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import precision_score, recall_score, f1_score
 
 torch.manual_seed(2020)
@@ -72,41 +72,42 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 print(torch.cuda.is_available())
 
-model = BaseModel(
-   NUM_CLASSES
-).to(device)
+# model = BaseModel(
+#    NUM_CLASSES
+# ).to(device)
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-logger = SummaryWriter("runs/cnn_attention_{:%Y-%m-%d_%H-%M-%S}".format(datetime.now()))
+# criterion = nn.CrossEntropyLoss()
+# optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+# logger = SummaryWriter("runs/cnn_attention_{:%Y-%m-%d_%H-%M-%S}".format(datetime.now()))
 
-epoch = 0
-iteration = 0
-for i in range(0, max_epoch_number):
-    batch_losses = []
-    for index, (imgs, targets) in enumerate(train_dataloader):
-        imgs, targets = imgs.to(device), targets.to(device)
+# epoch = 0
+# iteration = 0
+# for i in range(0, max_epoch_number):
+#     batch_losses = []
+#     for index, (imgs, targets) in enumerate(train_dataloader):
+#         imgs, targets = imgs.to(device), targets.to(device)
 
-        optimizer.zero_grad()
+        # optimizer.zero_grad()
 
-        model_result = model(imgs)
-        print(f"Model result: {model_result.shape}")
-        if index > 5:
-            print(f"End of index: {index}")
-#         print(f"Model fitted on data {i}")
-#         print(model_result.shape)
-#         loss = criterion(model_result, targets.type(torch.float))
-
-#         batch_loss_value = loss.item()
-#         loss.backward()
-#         optimizer.step()
+        # model_result = model(imgs)
+        # print(f"Model result: {model_result.shape}")
+        # if index > 5:
+        #     print(f"End of index: {index}")
+        #     break
+        # loss = criterion(model_result, targets.type(torch.float))
+        # batch_loss_value = loss.item()
+        # loss.backward()
+        # optimizer.step()
 
 #         logger.add_scalar('train_loss', batch_loss_value, iteration)
 #         batch_losses.append(batch_loss_value)
-#         with torch.no_grad():
-#             result = calculate_metrics(model_result.cpu().numpy(), targets.cpu().numpy())
-#             for metric in result:
-#                 logger.add_scalar('train/' + metric, result[metric], iteration)
+        # with torch.no_grad():
+        #     result = calculate_metrics(
+        #         model_result.cpu().numpy(),
+        #         targets.cpu().numpy())
+        #     print(result)
+            # for metric in result:
+            #     logger.add_scalar('train/' + metric, result[metric], iteration)
 
 #         if iteration % test_freq == 0:
 #             model.eval()

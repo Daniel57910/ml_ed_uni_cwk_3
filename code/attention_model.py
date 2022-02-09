@@ -1,10 +1,11 @@
+from sys import path_hooks
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from attention import ProjectorBlock, SpatialAttn, TemporalAttn
 import math
 from torchvision import models
-
+import torch.nn.functional as F
 """
 VGG-16 with attention
 """
@@ -50,7 +51,9 @@ class BaseModel(nn.Module):
     def __init__(self, n_classes) -> None:
         super().__init__()
         self.conv_1 = self._make_layer(3, 64, 3)
-        self.conv_2 = self._make_layer(64, 64, 3)
+        self.conv_2 = self._make_layer(64, 128, 3)
+        self.conv_3 = self._make_layer(128, 256, 3)
+        self.n_classes = n_classes
 
     def _make_layer(self, input_channels, out_features, kernel_size):
         return nn.Sequential(*[
@@ -62,5 +65,13 @@ class BaseModel(nn.Module):
 
     def forward(self, x):
         output_1 = self.conv_1(x)
-        output_2 = self.conv_2(x)
-        return output_2
+        output_2 = self.conv_2(output_1)
+        output_3 = self.conv_3(output_2)
+        pooling_layer = F.avg_pool2d(output_3, output_3.shape[-1])
+        flat_layer = pooling_layer.view(pooling_layer.shape[0], -1)
+        final_activation_function = nn.Linear(
+            in_features=flat_layer.shape[1],
+            out_features=self.n_classes,
+            bias=True
+            )
+        return final_activation_function(flat_layer)
