@@ -58,40 +58,40 @@ max_epoch_number = 3 # Number of epochs for training
 NUM_CLASSES = 27
 save_path = 'chekpoints/'
 
-dataset_val = NusDataset(
-    IMAGE_PATH, os.path.join(META_PATH, 'small_test.json'), None)
+# dataset_val = NusDataset(
+#     IMAGE_PATH, os.path.join(META_PATH, 'small_test.json'), None)
 
-dataset_train = NusDataset(
-    IMAGE_PATH, os.path.join(META_PATH, 'small_train.json'), None)
+# dataset_train = NusDataset(
+#     IMAGE_PATH, os.path.join(META_PATH, 'small_train.json'), None)
 
-train_dataloader = DataLoader(dataset_train, batch_size=60, shuffle=True)
-test_dataloader = DataLoader(dataset_val, batch_size=60, shuffle=True)
+# train_dataloader = DataLoader(dataset_train, batch_size=60, shuffle=True)
+# test_dataloader = DataLoader(dataset_val, batch_size=60, shuffle=True)
 
-num_train_batches = int(np.ceil(len(dataset_train) / batch_size))
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# num_train_batches = int(np.ceil(len(dataset_train) / batch_size))
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 print(torch.cuda.is_available())
 
-model = BaseModel(
-   NUM_CLASSES
-).to(device)
+# model = BaseModel(
+#    NUM_CLASSES
+# ).to(device)
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-logger = SummaryWriter("runs/cnn_attention_{:%Y-%m-%d_%H-%M-%S}".format(datetime.now()))
+# criterion = nn.CrossEntropyLoss()
+# optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+# logger = SummaryWriter("runs/cnn_attention_{:%Y-%m-%d_%H-%M-%S}".format(datetime.now()))
 
-epoch = 0
-iteration = 0
-for i in range(0, max_epoch_number):
-    batch_losses = []
-    for imgs, targets in train_dataloader:
-        imgs, targets = imgs.to(device), targets.to(device)
+# epoch = 0
+# iteration = 0
+# for i in range(0, max_epoch_number):
+#     batch_losses = []
+#     for imgs, targets in train_dataloader:
+#         imgs, targets = imgs.to(device), targets.to(device)
 
-        optimizer.zero_grad()
+#         optimizer.zero_grad()
 
-        model_result = model(imgs)
-        print(f"Model fitted on data {i}")
-        print(model_result.shape)
+#         model_result = model(imgs)
+#         print(f"Model fitted on data {i}")
+#         print(model_result.shape)
     #     loss = criterion(model_result, targets.type(torch.float))
 
     #     batch_loss_value = loss.item()
