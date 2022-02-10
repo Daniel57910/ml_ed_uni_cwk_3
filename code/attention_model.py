@@ -42,17 +42,22 @@ class BaseModel(nn.Module):
             output_1 = self.conv_1(x)
             output_2 = self.conv_2(output_1)
             output_3 = self.conv_3(output_2)
+            print(f"Device of output 3: {output_3.get_device()}")
         except:
             print("Unable to run convnet on GPU")
             raise Exception
         try:
             pooling_layer = F.avg_pool2d(output_3, output_3.shape[-1])
+            print(f"Device of pooling: {pooling_layer.get_device()}")
+
         except:
             print("Unable to run av pooling on device")
             raise Exception
 
         try:
             flat_layer = pooling_layer.view(pooling_layer.shape[0], -1)
+            print(f"Device of flat: {flat_layer.get_device()}")
+
         except:
             print("Unable to run flat layer on device")
             raise Exception
