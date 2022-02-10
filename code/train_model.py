@@ -3,8 +3,8 @@ import os
 import json
 import numpy as np
 from PIL import Image
-IMAGE_PATH = 'images'
-META_PATH = 'nus_wide'
+IMAGE_PATH = '../images'
+META_PATH = '../nus_wide'
 import matplotlib.pyplot as plt
 import numpy as np
 import random
