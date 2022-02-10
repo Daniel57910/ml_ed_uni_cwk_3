@@ -84,8 +84,9 @@ for i in range(0, max_epoch_number):
 
         with torch.no_grad():
             result = calculate_metrics(
-                model_result,
-                targets)
+                model_result.cpu().numpy(),
+                targets.cpu().numpy()
+            )
 
         print(f"Results at epoch {i}: loss = {batch_losses[-1]}")
         print(f"Accuracy stats {i}: {result}")
