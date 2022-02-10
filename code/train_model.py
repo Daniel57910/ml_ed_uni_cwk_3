@@ -74,7 +74,7 @@ for i in range(0, max_epoch_number):
         optimizer.zero_grad()
 
         model_result = model(imgs)
-        loss = criterion(model_result, targets.type(torch.float))
+        loss = criterion(model_result, targets)
         batch_loss_value = loss.item()
         loss.backward()
         optimizer.step()
@@ -83,8 +83,8 @@ for i in range(0, max_epoch_number):
 
         with torch.no_grad():
             result = calculate_metrics(
-                model_result.cpu().numpy(),
-                targets.cpu().numpy())
+                model_result,
+                targets)
 
         print(f"Results at epoch {i}: loss = {batch_losses[-1]}")
         print(f"Accuracy stats {i}: {result}")

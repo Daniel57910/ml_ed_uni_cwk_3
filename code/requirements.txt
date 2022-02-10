@@ -5,3 +5,5 @@ pandas
 pillow
 scikit-learn
 matplotlib
+tensorboard
+opencv-python
