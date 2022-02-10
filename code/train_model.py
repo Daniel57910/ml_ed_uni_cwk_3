@@ -69,7 +69,7 @@ running_loss = 0
 for i in range(0, max_epoch_number):
     batch_losses = []
     for imgs, targets in train_dataloader:
-        imgs, targets = imgs.to(device), targets.to(device)
+        # imgs, targets = imgs.to(device), targets.to(device)
 
         optimizer.zero_grad()
 
