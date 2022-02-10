@@ -82,10 +82,10 @@ for i in range(0, max_epoch_number):
         logger.add_scalar('train_loss', batch_loss_value, iteration)
         batch_losses.append(batch_loss_value)
 
-        # with torch.no_grad():
-        #     result = calculate_metrics(
-        #         model_result,
-        #         targets)
+        with torch.no_grad():
+            result = calculate_metrics(
+                model_result,
+                targets)
 
         print(f"Results at epoch {i}: loss = {batch_losses[-1]}")
         # print(f"Accuracy stats {i}: {result}")
