@@ -88,7 +88,7 @@ for i in range(0, max_epoch_number):
                 targets)
 
         print(f"Results at epoch {i}: loss = {batch_losses[-1]}")
-        # print(f"Accuracy stats {i}: {result}")
+        print(f"Accuracy stats {i}: {result}")
 
 
 
