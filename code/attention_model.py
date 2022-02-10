@@ -6,6 +6,7 @@ from attention import ProjectorBlock, SpatialAttn, TemporalAttn
 import math
 from torchvision import models
 import torch.nn.functional as F
+import pdb
 
 class BaseModel(nn.Module):
     def __init__(self, n_classes) -> None:
@@ -37,14 +38,34 @@ class BaseModel(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, x):
-        output_1 = self.conv_1(x)
-        output_2 = self.conv_2(output_1)
-        output_3 = self.conv_3(output_2)
-        pooling_layer = F.avg_pool2d(output_3, output_3.shape[-1])
-        flat_layer = pooling_layer.view(pooling_layer.shape[0], -1)
-        final_activation_function = nn.Linear(
-            in_features=flat_layer.shape[1],
-            out_features=self.n_classes,
-            bias=True
+        try:
+            output_1 = self.conv_1(x)
+            output_2 = self.conv_2(output_1)
+            output_3 = self.conv_3(output_2)
+        except:
+            print("Unable to run convnet on GPU")
+            raise Exception
+        try:
+            pooling_layer = F.avg_pool2d(output_3, output_3.shape[-1])
+        except:
+            print("Unable to run av pooling on device")
+            raise Exception
+
+        try:
+            flat_layer = pooling_layer.view(pooling_layer.shape[0], -1)
+        except:
+            print("Unable to run flat layer on device")
+            raise Exception
+
+        try:
+            final_activation_function = nn.Linear(
+                in_features=flat_layer.shape[1],
+                out_features=self.n_classes,
+                bias=True
             )
-        return final_activation_function(flat_layer)
+            final = final_activation_function(flat_layer)
+        except:
+            print("Final activation failed")
+            raise Exception
+
+        return final
