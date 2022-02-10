@@ -7,3 +7,11 @@ scikit-learn
 matplotlib
 tensorboard
 opencv-python
+
+# pytorch
+pytorch
+torchvision
+scikit-learn
+matplotlib
+tensorboard
+scikit-learn

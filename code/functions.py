@@ -2,7 +2,6 @@ import torch
 import torch.nn.functional as F
 import torchvision.utils as utils
 from sklearn.metrics import accuracy_score
-import cv2
 import pdb
 
 def train_epoch(model, criterion, optimizer, dataloader, device, epoch, log_interval, writer):

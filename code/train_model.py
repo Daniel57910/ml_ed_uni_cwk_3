@@ -20,7 +20,7 @@ torch.cuda.manual_seed(2020)
 np.random.seed(2020)
 random.seed(2020)
 torch.backends.cudnn.deterministic = True
-from functions import train_epoch, val_epoch
+# from functions import train_epoch, val_epoch
 import torch.optim as optim
 from datetime import datetime
 
