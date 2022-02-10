@@ -67,7 +67,7 @@ class BaseModel(nn.Module):
                 in_features=flat_layer.shape[1],
                 out_features=self.n_classes,
                 bias=True
-            )
+            ).to('cuda')
             final = final_activation_function(flat_layer)
         except:
             print("Final activation failed")
