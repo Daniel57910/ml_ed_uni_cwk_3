@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from attention import ProjectorBlock, SpatialAttn, TemporalAttn
-from basic_layers import ResNetBasicBlock
+from basic_layers import BasicBlock, ResNetBasicBlock
 from torchvision import models
 import torch.nn.functional as F
 import pdb
@@ -12,7 +12,7 @@ class BaseModel(nn.Module):
     def __init__(self, n_classes) -> None:
         super().__init__()
         self.conv_1 = self._make_layer(3, 64, 3)
-        self.res_block_1 = ResNetBasicBlock(64, 128)
+        self.res_block_1 = BasicBlock(64)
         self.n_classes = n_classes
 
     def _make_layer(self, input_channels, out_features, kernel_size):
