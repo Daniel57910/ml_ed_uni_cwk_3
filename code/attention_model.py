@@ -64,7 +64,7 @@ class BaseModel(nn.Module):
             print("Final activation failed")
             raise Exception
 
-        return final
+        return softmax_final
 
 
 model = BaseModel(27)
