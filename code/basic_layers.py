@@ -28,5 +28,8 @@ class BasicBlock(nn.Module):
             out = out + residual
         except:
             print("Issue")
-        out = nn.ReLU(x)
+        print(f"Output shape prior to RELU: {out.shape}")
+        out = nn.ReLU()(out)
+        print(f"Type of outward tensor: {type(out)}")
+        print(out.shape)
         return out

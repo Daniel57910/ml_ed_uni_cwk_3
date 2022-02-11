@@ -52,20 +52,22 @@ class BaseModel(nn.Module):
             raise Exception
 
         try:
-            flat_layer = res_layer.view(-1)
+            flat_layer = res_layer.view(res_layer.size(0), -1)
+            print(flat_layer.shape)
             final_activation_function = nn.Linear(
                 in_features=flat_layer.shape[1],
                 out_features=self.n_classes,
                 bias=True
-            ).to('cuda')
+            )
             final = final_activation_function(flat_layer)
-            softmax_final = nn.Softmax(final)
+
         except:
             print("Final activation failed")
             raise Exception
 
-        return softmax_final
+        print(f"Final shape {final.shape}, type: {type(final)}")
 
+        return final
 
 model = BaseModel(27)
 print(model)
