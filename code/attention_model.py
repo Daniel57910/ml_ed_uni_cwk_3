@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from attention import ProjectorBlock, SpatialAttn, TemporalAttn
-from basic_layers import BasicBlock, ResNetBasicBlock
+from basic_layers import BasicBlock
 from torchvision import models
 import torch.nn.functional as F
 import pdb

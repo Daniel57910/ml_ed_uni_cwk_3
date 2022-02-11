@@ -14,7 +14,6 @@ from attention_model import BaseModel
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import precision_score, recall_score, f1_score
-from residual_attention_network import ResidualAttentionModel_448input
 torch.manual_seed(2020)
 torch.cuda.manual_seed(2020)
 np.random.seed(2020)

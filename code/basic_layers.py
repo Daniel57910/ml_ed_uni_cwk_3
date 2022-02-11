@@ -24,6 +24,9 @@ class BasicBlock(nn.Module):
         residual = x
         out = self.conv_block1(x)
         out = self.conv_block2(out)
-        out = out + residual
+        try:
+            out = out + residual
+        except:
+            print("Issue")
         out = self.relu(x)
         return out
