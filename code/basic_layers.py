@@ -28,5 +28,5 @@ class BasicBlock(nn.Module):
             out = out + residual
         except:
             print("Issue")
-        out = self.relu(x)
+        out = self.ReLu(x)
         return out
