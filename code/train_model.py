@@ -14,7 +14,7 @@ from attention_model import BaseModel
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import precision_score, recall_score, f1_score
-
+from residual_attention_network import ResidualAttentionModel_448input
 torch.manual_seed(2020)
 torch.cuda.manual_seed(2020)
 np.random.seed(2020)
@@ -62,7 +62,6 @@ model.to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-logger = SummaryWriter("runs/cnn_attention_{:%Y-%m-%d_%H-%M-%S}".format(datetime.now()))
 
 epoch = 0
 iteration = 0
@@ -79,7 +78,6 @@ for i in range(0, max_epoch_number):
         batch_loss_value = loss.item()
         loss.backward()
         optimizer.step()
-        logger.add_scalar('train_loss', batch_loss_value, iteration)
         batch_losses.append(batch_loss_value)
 
         with torch.no_grad():
