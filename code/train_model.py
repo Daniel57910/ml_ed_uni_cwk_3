@@ -33,7 +33,7 @@ def calculate_metrics(pred, target, threshold=0.5):
     }
 
 learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
-max_epoch_number = 2 # Number of epochs for training
+max_epoch_number = 35 # Number of epochs for training
 
 NUM_CLASSES = 27
 save_path = 'chekpoints/'
@@ -88,6 +88,8 @@ for i in range(0, max_epoch_number):
         #     break
 
         # print(f"Accuracy stats {i}: {result}")
+    print(f"Barch losses at {i}: ")
+    print(batch_losses[-1])
 
 time = datetime.now().strftime("%Y_%m_%d-%H:%M")
 df = pd.DataFrame(batch_losses)
