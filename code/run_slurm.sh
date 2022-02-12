@@ -32,4 +32,4 @@ mkdir -p ${TMP}/datasets/
 export DATASET_DIR=${TMP}/datasets/
 # Activate the relevant virtual environment:
 
-source ~/.bashrc && conda activate mlp3 && torchrun cswk3/code/train_model.py
+source ~/.bashrc && conda activate mlp3 && torchrun cswk_3/code/train_model.py
