@@ -16,10 +16,13 @@ class BaseModel(nn.Module):
         self.res_block_1 = BasicBlock(64)
         self.att_block_1 = AttentionBasicBlock(64)
         self.res_block_2 = BasicBlock(64, 32)
-        self.flat_layer = nn.Linear(
-            in_features= 506944,
-            out_features=n_classes,
-            bias=True
+        self.flat_layer_1 = nn.Sequential(
+            nn.Flatten(start_dim=1),
+            nn.Linear(
+                in_features=253472,
+                out_features=n_classes,
+                bias=True
+            )
         )
         self.n_classes = n_classes
 
@@ -45,21 +48,11 @@ class BaseModel(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, x):
-        print("1st convolutional layer beginning")
         output_1 = self.conv_1(x)
-        print("1st residual layer beginning")
         res_layer = self.res_block_1(output_1)
-        print("1st attention layer beginning")
         att_layer = self.att_block_1(res_layer)
-        print("2nd residual layer beginning")
         res_layer_2 = self.res_block_2(att_layer)
-        print(f"Tensor shape prior to flat layer: {res_layer_2.shape}")
-        flattened = res_layer_2.reshape(-1)
-        print(flattened.shape)
-        final = self.flat_layer(flattened)
-        print("Final flat layer finish")
+        final = self.flat_layer_1(res_layer_2)
         return final
 
 
-model= BaseModel(27)
-print(summary(model, input_size=(3, 180, 180)))
