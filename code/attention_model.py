@@ -24,6 +24,7 @@ class BaseModel(nn.Module):
                 bias=True
             )
         )
+        self._initialize_weights()
         self.n_classes = n_classes
 
     def _make_layer(self, input_channels, out_features, kernel_size):
@@ -52,8 +53,8 @@ class BaseModel(nn.Module):
         res_layer = self.res_block_1(output_1)
         att_layer = self.att_block_1(res_layer)
         res_layer_2 = self.res_block_2(att_layer)
-        final = self.flat_layer_1(res_layer_2)
-        return final
+        flat_layer_1 = self.flat_layer_1(res_layer_2)
+        return flat_layer_1
 
 
 
