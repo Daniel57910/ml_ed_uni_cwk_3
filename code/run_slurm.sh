@@ -1,8 +1,8 @@
 #!/bin/sh
-#SBATCH -N 1	  # nodes requested
-#SBATCH -n 1	  # tasks requested
+#SBATCH -N 4	  # nodes requested
+#SBATCH -n 4	  # tasks requested
 #SBATCH --partition=Teach-Standard
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:4
 #SBATCH --mem=12000  # memory in Mb
 #SBATCH --time=0-08:00:00
 
@@ -32,4 +32,4 @@ mkdir -p ${TMP}/datasets/
 export DATASET_DIR=${TMP}/datasets/
 # Activate the relevant virtual environment:
 
-source ~/.bashrc && conda activate mlp3 && torchrun code/train_model.py
+source ~/.bashrc && conda activate mlp3 && torchrun cswk3/code/train_model.py
