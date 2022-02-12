@@ -3,9 +3,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from attention import ProjectorBlock, SpatialAttn, TemporalAttn
-from basic_layers import BasicBlock
+from basic_layers import BasicBlock, AttentionBasicBlock
 from torchvision import models
 import torch.nn.functional as F
+from torchsummary import summary
 import pdb
 
 class BaseModel(nn.Module):
@@ -13,6 +14,13 @@ class BaseModel(nn.Module):
         super().__init__()
         self.conv_1 = self._make_layer(3, 64, 3)
         self.res_block_1 = BasicBlock(64)
+        self.att_block_1 = AttentionBasicBlock(64)
+        self.res_block_2 = BasicBlock(64, 32)
+        self.flat_layer = nn.Linear(
+            in_features= 506944,
+            out_features=n_classes,
+            bias=True
+        )
         self.n_classes = n_classes
 
     def _make_layer(self, input_channels, out_features, kernel_size):
@@ -37,37 +45,21 @@ class BaseModel(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, x):
-        try:
-            output_1 = self.conv_1(x)
-            print(f"Device of output 1 conv_1: {output_1.get_device()}")
-        except:
-            print("Unable to run convnet on GPU")
-            raise Exception
-
-        try:
-            res_layer = self.res_block_1(output_1)
-            print(f"Device of flat: {res_layer.get_device()}")
-        except:
-            print("Unable to run res layer on device")
-            raise Exception
-
-        try:
-            flat_layer = res_layer.view(res_layer.size(0), -1)
-            print(flat_layer.shape)
-            final_activation_function = nn.Linear(
-                in_features=flat_layer.shape[1],
-                out_features=self.n_classes,
-                bias=True
-            )
-            final = final_activation_function(flat_layer)
-
-        except:
-            print("Final activation failed")
-            raise Exception
-
-        print(f"Final shape {final.shape}, type: {type(final)}")
-
+        print("1st convolutional layer beginning")
+        output_1 = self.conv_1(x)
+        print("1st residual layer beginning")
+        res_layer = self.res_block_1(output_1)
+        print("1st attention layer beginning")
+        att_layer = self.att_block_1(res_layer)
+        print("2nd residual layer beginning")
+        res_layer_2 = self.res_block_2(att_layer)
+        print(f"Tensor shape prior to flat layer: {res_layer_2.shape}")
+        flattened = res_layer_2.reshape(-1)
+        print(flattened.shape)
+        final = self.flat_layer(flattened)
+        print("Final flat layer finish")
         return final
 
-model = BaseModel(27)
-print(model)
+
+model= BaseModel(27)
+print(summary(model, input_size=(3, 180, 180)))

@@ -1,8 +1,6 @@
 from dataset import NusDataset
 import os
-import json
 import numpy as np
-from PIL import Image
 IMAGE_PATH = 'images'
 META_PATH = 'nus_wide'
 import matplotlib.pyplot as plt
@@ -12,16 +10,15 @@ import torch
 from torch.utils.data import DataLoader
 from attention_model import BaseModel
 import torch.nn as nn
-from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import precision_score, recall_score, f1_score
 torch.manual_seed(2020)
 torch.cuda.manual_seed(2020)
 np.random.seed(2020)
 random.seed(2020)
 torch.backends.cudnn.deterministic = True
-# from functions import train_epoch, val_epoch
 import torch.optim as optim
 from datetime import datetime
+import pandas as pd
 
 # Use threshold to define predicted labels and invoke sklearn's metrics with different averaging strategies.
 def calculate_metrics(pred, target, threshold=0.5):
@@ -36,7 +33,7 @@ def calculate_metrics(pred, target, threshold=0.5):
     }
 
 learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
-max_epoch_number = 3 # Number of epochs for training
+max_epoch_number = 2 # Number of epochs for training
 
 NUM_CLASSES = 27
 save_path = 'chekpoints/'
@@ -65,9 +62,10 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight
 epoch = 0
 iteration = 0
 running_loss = 0
+batch_losses = []
 for i in range(0, max_epoch_number):
-    batch_losses = []
-    for imgs, targets in train_dataloader:
+    for index, (imgs, targets) in enumerate(train_dataloader):
+        print(imgs.shape)
         imgs, targets = imgs.to(device), targets.to(device)
 
         optimizer.zero_grad()
@@ -77,16 +75,26 @@ for i in range(0, max_epoch_number):
         batch_loss_value = loss.item()
         loss.backward()
         optimizer.step()
-        batch_losses.append(batch_loss_value)
-
         with torch.no_grad():
             result = calculate_metrics(
                 model_result.cpu().numpy(),
                 targets.cpu().numpy()
             )
 
-        print(f"Results at epoch {i}: loss = {batch_losses[-1]}")
+        result['epoch'] = i
+        result['losses'] = batch_loss_value
+        batch_losses.append(result)
+
         print(f"Accuracy stats {i}: {result}")
+        if index >= 1:
+            break
+
+time = datetime.now().strftime("%Y_%m_%d-%H:%M")
+# print(time)
+df = pd.DataFrame(batch_losses)
+df.to_csv(f"training_results_{time}.csv")
+# print(df.head(10))
+
 
 
 

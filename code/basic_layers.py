@@ -4,32 +4,60 @@ from torch.nn import init
 import functools
 from torch.autograd import Variable
 import numpy as np
+import pdb
 
 class BasicBlock(nn.Module):
-    def __init__(self, channel_num):
+    def __init__(self, channel_input, channel_output=None):
+
+        if not channel_output:
+            channel_output = channel_input
+
         super(BasicBlock, self).__init__()
         self.conv_block1 = nn.Sequential(
-            nn.Conv2d(channel_num, channel_num, 3, padding=1),
-            nn.BatchNorm2d(channel_num),
+            nn.Conv2d(channel_input, channel_output, 3, padding=1),
+            nn.BatchNorm2d(channel_output),
             nn.ReLU()
         )
         self.conv_block2 = nn.Sequential(
-            nn.Conv2d(channel_num, channel_num, 3, padding=1),
-            nn.BatchNorm2d(channel_num),
+            nn.Conv2d(channel_output, channel_output, 3, padding=1),
+            nn.BatchNorm2d(channel_output),
             nn.ReLU()
         )
 
-    def forward(self, x):
+        if channel_output:
+            self.residual_block = nn.Sequential(
+                nn.Conv2d(channel_input, channel_output, 3, padding=1),
+                nn.BatchNorm2d(channel_output)
+            )
 
+    def forward(self, x):
         residual = x
         out = self.conv_block1(x)
         out = self.conv_block2(out)
-        try:
+        if out.shape != residual.shape:
+            residual = self.residual_block(residual)
             out = out + residual
-        except:
-            print("Issue")
-        print(f"Output shape prior to RELU: {out.shape}")
         out = nn.ReLU()(out)
-        print(f"Type of outward tensor: {type(out)}")
-        print(out.shape)
         return out
+
+
+class AttentionBasicBlock(nn.Module):
+    def __init__(self, channel_num) -> None:
+        super(AttentionBasicBlock, self).__init__()
+        self.residual_one = BasicBlock(64)
+        self.trunk = nn.Sequential(
+            BasicBlock(64),
+            BasicBlock(64)
+        )
+
+        self.softmax = nn.Softmax(dim=0)
+        self.upsample = nn.UpsamplingBilinear2d(size=(89, 89))
+
+    def forward(self, x):
+        out = self.residual_one(x)
+        trunk = self.trunk(x)
+        out_pool = nn.MaxPool2d(kernel_size=3, stride=2)(out)
+        softmax = self.softmax(out_pool)
+        upsample = self.upsample(softmax)
+        trunk_combine = (1 + upsample) * trunk
+        return trunk_combine
