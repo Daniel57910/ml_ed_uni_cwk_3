@@ -84,10 +84,10 @@ for i in range(0, max_epoch_number):
         result['losses'] = batch_loss_value
         batch_losses.append(result)
 
-        if i >= 4:
-            break
+        # if i >= 4:
+        #     break
 
-        print(f"Accuracy stats {i}: {result}")
+        # print(f"Accuracy stats {i}: {result}")
 
 time = datetime.now().strftime("%Y_%m_%d-%H:%M")
 df = pd.DataFrame(batch_losses)
