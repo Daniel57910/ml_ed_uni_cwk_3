@@ -65,7 +65,6 @@ running_loss = 0
 batch_losses = []
 for i in range(0, max_epoch_number):
     for index, (imgs, targets) in enumerate(train_dataloader):
-        print(imgs.shape)
         imgs, targets = imgs.to(device), targets.to(device)
 
         optimizer.zero_grad()
@@ -86,14 +85,10 @@ for i in range(0, max_epoch_number):
         batch_losses.append(result)
 
         print(f"Accuracy stats {i}: {result}")
-        if index >= 1:
-            break
 
 time = datetime.now().strftime("%Y_%m_%d-%H:%M")
-# print(time)
 df = pd.DataFrame(batch_losses)
 df.to_csv(f"training_results_{time}.csv")
-# print(df.head(10))
 
 
 
