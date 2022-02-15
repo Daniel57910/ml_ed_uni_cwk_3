@@ -61,5 +61,3 @@ class BaseModel(nn.Module):
         return activation.double()
 
 
-model = BaseModel(27)
-print(summary(model, (3, 180, 180)))
