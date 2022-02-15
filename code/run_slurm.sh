@@ -3,6 +3,7 @@
 #SBATCH -n 4	  # tasks requested
 #SBATCH --partition=Teach-Standard
 #SBATCH --gres=gpu:4
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=12000  # memory in Mb
 #SBATCH --time=0-08:00:00
 
