@@ -30,6 +30,7 @@ class BasicBlock(nn.Module):
                 nn.BatchNorm2d(channel_output)
             )
 
+
     def forward(self, x):
         residual = x
         out = self.conv_block1(x)
@@ -37,7 +38,6 @@ class BasicBlock(nn.Module):
         if out.shape != residual.shape:
             residual = self.residual_block(residual)
             out = out + residual
-        out = nn.ReLU()(out)
         return out
 
 

@@ -56,8 +56,9 @@ model = BaseModel(
 )
 model.to(device)
 
-criterion = nn.CrossEntropyLoss()
+criterion = nn.BCELoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+import pdb
 
 epoch = 0
 iteration = 0
@@ -84,11 +85,7 @@ for i in range(0, max_epoch_number):
         result['losses'] = batch_loss_value
         batch_losses.append(result)
 
-        # if i >= 4:
-        #     break
-
-        # print(f"Accuracy stats {i}: {result}")
-    print(f"Barch losses at {i}: ")
+    print(f"Batch losses at {i}: ")
     print(batch_losses[-1])
 
 time = datetime.now().strftime("%Y_%m_%d-%H:%M")

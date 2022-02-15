@@ -2,7 +2,6 @@ from sys import path_hooks
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from attention import ProjectorBlock, SpatialAttn, TemporalAttn
 from basic_layers import BasicBlock, AttentionBasicBlock
 from torchvision import models
 import torch.nn.functional as F
@@ -25,6 +24,7 @@ class BaseModel(nn.Module):
             )
         )
         self._initialize_weights()
+        self.activation = nn.Sigmoid()
         self.n_classes = n_classes
 
     def _make_layer(self, input_channels, out_features, kernel_size):
@@ -54,7 +54,9 @@ class BaseModel(nn.Module):
         att_layer = self.att_block_1(res_layer)
         res_layer_2 = self.res_block_2(att_layer)
         flat_layer_1 = self.flat_layer_1(res_layer_2)
-        return flat_layer_1
+        activation = self.activation(flat_layer_1)
+        return activation.double()
 
 
-
+model = BaseModel(27)
+print(summary(model, (3, 180, 180)))
