@@ -55,6 +55,9 @@ class BaseModel(nn.Module):
         res_layer_2 = self.res_block_2(att_layer)
         flat_layer_1 = self.flat_layer_1(res_layer_2)
         activation = self.activation(flat_layer_1)
+        """
+        Casting required for BCE loss
+        """
         return activation.double()
 
 
