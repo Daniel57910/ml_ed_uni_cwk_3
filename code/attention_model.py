@@ -59,5 +59,3 @@ class BaseModel(nn.Module):
         Casting required for BCE loss
         """
         return activation.double()
-
-
