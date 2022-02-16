@@ -65,14 +65,12 @@ iteration = 0
 running_loss = 0
 batch_losses = []
 batch_losses_test = []
-for i in range(0, 2):
+for i in range(0, max_epoch_number):
 
     """
     Run against training data
     """
     for index, (imgs, targets) in enumerate(train_dataloader):
-        if index > 2:
-            break
         imgs, targets = imgs.to(device), targets.to(device)
 
         optimizer.zero_grad()
@@ -99,8 +97,6 @@ for i in range(0, 2):
         """
         with torch.no_grad():
             for index_val, (val_imgs, val_targets) in enumerate(test_dataloader):
-                if index_val > 2:
-                    break
                 val_result = model(val_imgs)
                 val_losses = criterion(val_result, val_targets)
                 val_metrics = calculate_metrics(
@@ -114,12 +110,13 @@ for i in range(0, 2):
 
 
     print(f"Batch training losses at {i} {batch_losses[-1]}")
-    print(f"Batch validation losses at {i} {val_metrics[-1]}")
+    print(f"Batch validation losses at {i} {batch_losses_test[-1]}")
 
 time = datetime.now().strftime("%Y_%m_%d-%H:%M")
+
 df = pd.DataFrame(batch_losses)
-df_val = pd.DataFrame(val_metrics)
-print(df.tail(10))
+df_val = pd.DataFrame(batch_losses_test)
+
 df.to_csv(f"training_results_{time}.csv")
 df_val.to_csv(f"validation_results_{time}.csv")
 
