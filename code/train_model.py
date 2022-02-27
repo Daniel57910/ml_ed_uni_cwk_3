@@ -19,6 +19,7 @@ torch.backends.cudnn.deterministic = True
 import torch.optim as optim
 from datetime import datetime
 import pandas as pd
+from tqdm import tqdm
 
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -92,26 +93,28 @@ for i in range(0, max_epoch_number):
     Run against training data
     """
     model.train()
-    for index, (imgs, targets) in enumerate(train_dataloader):
-        imgs, targets = imgs.to(device), targets.to(device)
+    with tqdm(train_dataloader, unit="batch") as tepoch:
+        for imgs, targets in tepoch:
+            tepoch.set_description(f"Epoch: {i}")
+            imgs, targets = imgs.to(device), targets.to(device)
 
-        optimizer.zero_grad()
+            optimizer.zero_grad()
 
-        model_result = model(imgs)
-        loss = criterion(model_result, targets)
-        batch_loss_value = loss.item()
-        loss.backward()
-        optimizer.step()
-        with torch.no_grad():
-            result = calculate_metrics(
-                model_result.cpu().numpy(),
-                targets.cpu().numpy()
+            model_result = model(imgs)
+            loss = criterion(model_result, targets)
+            batch_loss_value = loss.item()
+            loss.backward()
+            optimizer.step()
+            with torch.no_grad():
+                result = calculate_metrics(
+                    model_result.cpu().numpy(),
+                    targets.cpu().numpy()
             )
 
-        result['epoch'] = i
-        result['losses'] = batch_loss_value
-        batch_losses.append(result)
-
+            result['epoch'] = i
+            result['losses'] = batch_loss_value
+            batch_losses.append(result)
+            tepoch.set_postfix(loss=loss.item())
     """
     Run against test data
     """

@@ -5,7 +5,7 @@ from PIL import Image
 IMAGE_PATH = 'images'
 META_PATH = 'nus_wide'
 from torchvision import transforms
-
+import pdb
 class NusDataset:
     def __init__(self, data_path, anno_path, transforms):
         self.transforms = transforms
@@ -37,6 +37,10 @@ class NusDataset:
         img = convert_tensor(img)
         if self.transforms is not None:
             img = self.transforms(img)
+
+        if img.shape != (3, 180, 180):
+            pdb.set_trace()
+
         return img, anno
 
     def __len__(self):
