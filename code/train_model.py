@@ -23,7 +23,7 @@ import pandas as pd
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data.distributed import DistributedSampler
-from torch.distributed.optim import DistributedOptimizer
+from torch.distributed.optim import ZeroRedundancyOptimizer
 from torch import optim
 import torch.distributed.autograd as dist_autograd
 
@@ -72,9 +72,9 @@ if torch.cuda.is_available():
         print('Use GPU', device)
 
 criterion = nn.BCELoss()
-optimizer = DistributedOptimizer(
-    optim.Adam,
+optimizer = ZeroRedundancyOptimizer(
     model.parameters(),
+    optimizer_class=torch.optim.Adam,
     lr=learning_rate
 )
 
