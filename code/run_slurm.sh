@@ -5,6 +5,7 @@
 #SBATCH --mem=12000  # memory in Mb
 #SBATCH --cpus-per-task=8
 #SBATCH --partition=Teach-Standard
+#SBATCH --mail-user=s0905577
 #SBATCH --time=0-08:00:00
 
 

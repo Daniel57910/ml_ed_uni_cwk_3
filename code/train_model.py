@@ -84,7 +84,8 @@ criterion = nn.BCELoss()
 optimizer = ZeroRedundancyOptimizer(
     model.parameters(),
     optimizer_class=torch.optim.Adam,
-    lr=learning_rate
+    lr=learning_rate,
+    weight_decay=weight_decay
 )
 
 epoch = 0
@@ -144,10 +145,12 @@ for i in range(0, max_epoch_number):
     """
     Early stoppage if model overfitting
     """
-    if batch_losses[-1]['losses'] < 0.01:
-        break
     print(f"Batch training losses at {i} {batch_losses[-1]}")
     print(f"Batch validation losses at {i} {batch_losses_test[-1]}")
+    learning_completed = [l['losses'] for l in batch_losses if l['losses'] < 0.01]
+    if batch_losses[-1]['losses'] < 0.01 or len(learning_completed) > 1:
+        print("Early stoppage implementation")
+        break
 
 time = datetime.now().strftime("%Y_%m_%d-%H:%M")
 df = pd.DataFrame(batch_losses)

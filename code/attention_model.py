@@ -32,7 +32,8 @@ class BaseModel(nn.Module):
             nn.Conv2d(input_channels, out_features, kernel_size),
             nn.BatchNorm2d(out_features, affine=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.ReLU(inplace=True)
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.2)
         ])
 
     def _initialize_weights(self):
