@@ -47,7 +47,7 @@ def calculate_metrics(pred, target, threshold=0.5):
 learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
 max_epoch_number = 10 # Number of epochs for training
 dist.init_process_group(backend='nccl')
-NUM_CLASSES = 81
+NUM_CLASSES = 27
 BATCH_SIZE=60
 save_path = 'chekpoints/'
 
@@ -141,6 +141,9 @@ for i in range(0, max_epoch_number):
                 batch_losses_test.append(val_metrics)
                 test_epoch.set_postfix(test_loss=val_losses.item())
 
+    """
+    Early stoppage if model overfitting
+    """
     if batch_losses[-1]['losses'] < 0.01:
         break
     print(f"Batch training losses at {i} {batch_losses[-1]}")
