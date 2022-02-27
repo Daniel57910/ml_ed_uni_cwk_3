@@ -48,23 +48,28 @@ train_dataloader = DataLoader(dataset_train, batch_size=60, shuffle=True)
 test_dataloader = DataLoader(dataset_val, batch_size=60, shuffle=True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(torch.cuda.device_count())
+model = BaseModel(
+   NUM_CLASSES
+)
+model.to(device)
 
-# print(torch.cuda.is_available())
+if torch.cuda.is_available():
+    device_count = torch.cuda.device_count()
+    if device_count > 1:
+        print(f"Parralelising training across {device_count} GPU")
+        model = nn.DataParallel(module=model)
+        print(f'Use multi GPU', device)
+    else:
+        print('Use GPU', device)
 
-# model = BaseModel(
-#    NUM_CLASSES
-# )
-# model.to(device)
+criterion = nn.BCELoss()
+optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
-# criterion = nn.BCELoss()
-# optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-
-# epoch = 0
-# iteration = 0
-# running_loss = 0
-# batch_losses = []
-# batch_losses_test = []
+epoch = 0
+iteration = 0
+running_loss = 0
+batch_losses = []
+batch_losses_test = []
 # for i in range(0, max_epoch_number):
 
 #     """
