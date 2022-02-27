@@ -20,6 +20,13 @@ import torch.optim as optim
 from datetime import datetime
 import pandas as pd
 
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data.distributed import DistributedSampler
+from torch.distributed.optim import DistributedOptimizer
+from torch import optim
+import torch.distributed.autograd as dist_autograd
+
 # Use threshold to define predicted labels and invoke sklearn's metrics with different averaging strategies.
 def calculate_metrics(pred, target, threshold=0.5):
     pred = np.array(pred > threshold, dtype=float)
@@ -34,7 +41,7 @@ def calculate_metrics(pred, target, threshold=0.5):
 
 learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
 max_epoch_number = 35 # Number of epochs for training
-
+dist.init_process_group(backend='nccl')
 NUM_CLASSES = 27
 save_path = 'chekpoints/'
 
@@ -44,8 +51,10 @@ dataset_val = NusDataset(
 dataset_train = NusDataset(
     IMAGE_PATH, os.path.join(META_PATH, 'small_train.json'), None)
 
-train_dataloader = DataLoader(dataset_train, batch_size=60, shuffle=True)
-test_dataloader = DataLoader(dataset_val, batch_size=60, shuffle=True)
+sampler_train, sampler_val = DistributedSampler(dataset_train), DistributedSampler(dataset_val)
+
+train_dataloader = DataLoader(dataset_train, batch_size=60, shuffle=True, sampler=sampler_train)
+test_dataloader = DataLoader(dataset_val, batch_size=60, shuffle=True, sampler=sampler_val)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = BaseModel(
@@ -57,13 +66,17 @@ if torch.cuda.is_available():
     device_count = torch.cuda.device_count()
     if device_count > 1:
         print(f"Parralelising training across {device_count} GPU")
-        model = nn.DataParallel(module=model)
+        model = DDP(model)
         print(f'Use multi GPU', device)
     else:
         print('Use GPU', device)
 
 criterion = nn.BCELoss()
-optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+optimizer = DistributedOptimizer(
+    optim.Adam,
+    model.parameters(),
+    lr=learning_rate
+)
 
 epoch = 0
 iteration = 0
@@ -75,6 +88,7 @@ for i in range(0, max_epoch_number):
     """
     Run against training data
     """
+    model.train()
     for index, (imgs, targets) in enumerate(train_dataloader):
         imgs, targets = imgs.to(device), targets.to(device)
 
@@ -95,12 +109,11 @@ for i in range(0, max_epoch_number):
         result['losses'] = batch_loss_value
         batch_losses.append(result)
 
-        model.eval()
-
     """
     Run against test data
     """
     with torch.no_grad():
+        model.eval()
         for index_val, (val_imgs, val_targets) in enumerate(test_dataloader):
             val_imgs, val_targets = val_imgs.to(device), val_targets.to(device)
             val_result = model(val_imgs)
