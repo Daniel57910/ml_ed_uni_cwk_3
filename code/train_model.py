@@ -42,7 +42,7 @@ def calculate_metrics(pred, target, threshold=0.5):
 learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
 max_epoch_number = 35 # Number of epochs for training
 dist.init_process_group(backend='nccl')
-NUM_CLASSES = 27
+NUM_CLASSES = 81
 save_path = 'chekpoints/'
 
 dataset_val = NusDataset(
