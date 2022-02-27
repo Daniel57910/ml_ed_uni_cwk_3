@@ -1,7 +1,6 @@
 #!/bin/sh
 #SBATCH -N 1	  # nodes requested
 #SBATCH -n 1	  # tasks requested
-#SBATCH --partition=CDT_Compute
 #SBATCH --gres=gpu:4
 #SBATCH --mem=12000  # memory in Mb
 #SBATCH --time=0-08:00:00
