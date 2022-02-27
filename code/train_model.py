@@ -28,6 +28,10 @@ from torch.distributed.optim import ZeroRedundancyOptimizer
 from torch import optim
 import torch.distributed.autograd as dist_autograd
 
+
+def collate_fn(batch):
+    batch = list(filter(lambda x: x is not None, batch))
+    return torch.utils.data.dataloader.default_collate(batch)
 # Use threshold to define predicted labels and invoke sklearn's metrics with different averaging strategies.
 def calculate_metrics(pred, target, threshold=0.5):
     pred = np.array(pred > threshold, dtype=float)
@@ -54,8 +58,8 @@ dataset_train = NusDataset(
 
 sampler_train, sampler_val = DistributedSampler(dataset_train), DistributedSampler(dataset_val)
 
-train_dataloader = DataLoader(dataset_train, batch_size=60, sampler=sampler_train)
-test_dataloader = DataLoader(dataset_val, batch_size=60, sampler=sampler_val)
+train_dataloader = DataLoader(dataset_train, batch_size=60, sampler=sampler_train, collate_fn=collate_fn)
+test_dataloader = DataLoader(dataset_val, batch_size=60, sampler=sampler_val, collate_fn=collate_fn)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = BaseModel(

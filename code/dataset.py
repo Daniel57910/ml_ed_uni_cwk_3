@@ -30,7 +30,7 @@ class NusDataset:
     def __getitem__(self, item):
         anno = self.annos[item]
         img_path = os.path.join(self.data_path, self.imgs[item])
-        img = Image.open(img_path)
+        img = Image.open(img_path).convert("RGB")
         img = img.resize((180, 180))
         convert_tensor = transforms.ToTensor()
 
@@ -39,7 +39,8 @@ class NusDataset:
             img = self.transforms(img)
 
         if img.shape != (3, 180, 180):
-            pdb.set_trace()
+            print(f"Data at {img_path} is corrupted, skipping")
+            return None
 
         return img, anno
 
