@@ -66,7 +66,10 @@ if torch.cuda.is_available():
     device_count = torch.cuda.device_count()
     if device_count > 1:
         print(f"Parralelising training across {device_count} GPU")
-        model = DDP(model)
+        model = DDP(
+            model,
+            find_unused_parameters=True
+        )
         print(f'Use multi GPU', device)
     else:
         print('Use GPU', device)
