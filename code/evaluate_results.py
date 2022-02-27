@@ -17,9 +17,6 @@ df_train.columns = [col + "_train"  if col != 'epoch' else col for col in df_tra
 df_val.columns = [col + "_val" if col != 'epoch' else col for col in df_val.columns]
 print(df_train.columns)
 
-# print(df_train.count())
-# print(df_val.count())
-
 df_combined = pd.merge(
     df_train,
     df_val,
@@ -27,8 +24,6 @@ df_combined = pd.merge(
 )
 
 print(df_combined.columns)
-# losses_subset = df_combined[['losses_train', 'losses_val']]
-# print(losses_subset)
 fig, axs = plt.subplots(2, 2)
 plotting_meta = [
     {
