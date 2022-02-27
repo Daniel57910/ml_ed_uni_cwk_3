@@ -2,7 +2,8 @@
 #SBATCH -N 4	  # nodes requested
 #SBATCH -n 4	  # tasks requested
 #SBATCH --gres=gpu:4
-#SBATCH --mem=32000  # memory in Mb
+#SBATCH --mem=12000  # memory in Mb
+#SBATCH --cpus-per-task=8
 #SBATCH --partition=Teach-LongJobs
 #SBATCH --time=0-08:00:00
 
