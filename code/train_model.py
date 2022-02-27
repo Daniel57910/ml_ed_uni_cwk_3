@@ -10,7 +10,7 @@ import torch
 from torch.utils.data import DataLoader
 from attention_model import BaseModel
 import torch.nn as nn
-from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 torch.manual_seed(2020)
 torch.cuda.manual_seed(2020)
 np.random.seed(2020)
@@ -36,6 +36,7 @@ def collate_fn(batch):
 def calculate_metrics(pred, target, threshold=0.5):
     pred = np.array(pred > threshold, dtype=float)
     return {
+        'accuracy': accuracy_score(y_true=target, y_pred=pred),
         'micro/precision': precision_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
         'micro/recall': recall_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
         'micro/f1': f1_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
@@ -120,7 +121,7 @@ for i in range(0, max_epoch_number):
             result['epoch'] = i
             result['losses'] = batch_loss_value
             batch_losses.append(result)
-            train_epoch.set_postfix(loss=loss.item())
+            train_epoch.set_postfix(train_loss=loss.item(), train_acc=result['accuracy'])
     """
     Run against test data
     """
@@ -140,7 +141,7 @@ for i in range(0, max_epoch_number):
                 val_metrics['epoch'] = i
                 val_metrics['losses'] = val_losses.item()
                 batch_losses_test.append(val_metrics)
-                test_epoch.set_postfix(test_loss=val_losses.item())
+                test_epoch.set_postfix(test_loss=val_losses.item(), test_acc=val_metrics['accuracy'])
 
     """
     Early stoppage if model overfitting
