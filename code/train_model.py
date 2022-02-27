@@ -127,7 +127,7 @@ for i in range(0, max_epoch_number):
         test_epoch.set_description(f"Epoch: {i}")
         with torch.no_grad():
             model.eval()
-            for val_imgs, val_targets in enumerate(test_dataloader):
+            for val_imgs, val_targets in test_epoch:
                 val_imgs, val_targets = val_imgs.to(device), val_targets.to(device)
                 val_result = model(val_imgs)
                 val_losses = criterion(val_result, val_targets)
