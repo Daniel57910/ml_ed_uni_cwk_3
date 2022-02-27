@@ -48,6 +48,7 @@ learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
 max_epoch_number = 35 # Number of epochs for training
 dist.init_process_group(backend='nccl')
 NUM_CLASSES = 81
+BATCH_SIZE=10000
 save_path = 'chekpoints/'
 
 dataset_val = NusDataset(
@@ -58,8 +59,8 @@ dataset_train = NusDataset(
 
 sampler_train, sampler_val = DistributedSampler(dataset_train), DistributedSampler(dataset_val)
 
-train_dataloader = DataLoader(dataset_train, batch_size=60, sampler=sampler_train, collate_fn=collate_fn)
-test_dataloader = DataLoader(dataset_val, batch_size=60, sampler=sampler_val, collate_fn=collate_fn)
+train_dataloader = DataLoader(dataset_train, batch_size=BATCH_SIZE, sampler=sampler_train, collate_fn=collate_fn)
+test_dataloader = DataLoader(dataset_val, batch_size=BATCH_SIZE, sampler=sampler_val, collate_fn=collate_fn)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = BaseModel(
