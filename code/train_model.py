@@ -53,8 +53,8 @@ dataset_train = NusDataset(
 
 sampler_train, sampler_val = DistributedSampler(dataset_train), DistributedSampler(dataset_val)
 
-train_dataloader = DataLoader(dataset_train, batch_size=60, shuffle=True, sampler=sampler_train)
-test_dataloader = DataLoader(dataset_val, batch_size=60, shuffle=True, sampler=sampler_val)
+train_dataloader = DataLoader(dataset_train, batch_size=60, sampler=sampler_train)
+test_dataloader = DataLoader(dataset_val, batch_size=60, sampler=sampler_val)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = BaseModel(
