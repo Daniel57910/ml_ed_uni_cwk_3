@@ -4,7 +4,7 @@
 #SBATCH --partition=Teach-Standard
 #SBATCH --gres=gpu:4
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=24000  # memory in Mb
+#SBATCH --mem=12000  # memory in Mb
 #SBATCH --time=0-08:00:00
 
 export CUDA_HOME=/opt/cuda-9.0.176.1/
