@@ -48,15 +48,15 @@ def calculate_metrics(pred, target, threshold=0.5):
 learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
 max_epoch_number = 35 # Number of epochs for training
 dist.init_process_group(backend='nccl')
-NUM_CLASSES = 27
+NUM_CLASSES = 81
 BATCH_SIZE=40
 save_path = 'chekpoints/'
 
 dataset_val = NusDataset(
-    IMAGE_PATH, os.path.join(META_PATH, 'small_test.json'), None)
+    IMAGE_PATH, os.path.join(META_PATH, 'test.json'), None)
 
 dataset_train = NusDataset(
-    IMAGE_PATH, os.path.join(META_PATH, 'small_train.json'), None)
+    IMAGE_PATH, os.path.join(META_PATH, 'train.json'), None)
 
 sampler_train, sampler_val = DistributedSampler(dataset_train), DistributedSampler(dataset_val)
 
