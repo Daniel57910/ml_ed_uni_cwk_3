@@ -52,10 +52,10 @@ BATCH_SIZE=60
 save_path = 'chekpoints/'
 
 dataset_val = NusDataset(
-    IMAGE_PATH, os.path.join(META_PATH, 'test.json'), None)
+    IMAGE_PATH, os.path.join(META_PATH, 'small_test.json'), None)
 
 dataset_train = NusDataset(
-    IMAGE_PATH, os.path.join(META_PATH, 'train.json'), None)
+    IMAGE_PATH, os.path.join(META_PATH, 'small_train.json'), None)
 
 sampler_train, sampler_val = DistributedSampler(dataset_train), DistributedSampler(dataset_val)
 
@@ -98,9 +98,9 @@ for i in range(0, max_epoch_number):
     Run against training data
     """
     model.train()
-    with tqdm(train_dataloader, unit="batch") as tepoch:
-        for imgs, targets in tepoch:
-            tepoch.set_description(f"Epoch: {i}")
+    with tqdm(train_dataloader, unit="batch") as train_epoch:
+        for imgs, targets in train_epoch:
+            train_epoch.set_description(f"Epoch: {i}")
             imgs, targets = imgs.to(device), targets.to(device)
 
             optimizer.zero_grad()
@@ -119,25 +119,30 @@ for i in range(0, max_epoch_number):
             result['epoch'] = i
             result['losses'] = batch_loss_value
             batch_losses.append(result)
-            tepoch.set_postfix(loss=loss.item())
+            train_epoch.set_postfix(loss=loss.item())
     """
     Run against test data
     """
-    with torch.no_grad():
-        model.eval()
-        for index_val, (val_imgs, val_targets) in enumerate(test_dataloader):
-            val_imgs, val_targets = val_imgs.to(device), val_targets.to(device)
-            val_result = model(val_imgs)
-            val_losses = criterion(val_result, val_targets)
-            val_metrics = calculate_metrics(
-                val_result.cpu().numpy(),
-                val_targets.cpu().numpy()
-            )
+    with tqdm(test_dataloader, unit="batch") as test_epoch:
+        test_epoch.set_description(f"Epoch: {i}")
+        with torch.no_grad():
+            model.eval()
+            for val_imgs, val_targets in enumerate(test_dataloader):
+                val_imgs, val_targets = val_imgs.to(device), val_targets.to(device)
+                val_result = model(val_imgs)
+                val_losses = criterion(val_result, val_targets)
+                val_metrics = calculate_metrics(
+                    val_result.cpu().numpy(),
+                    val_targets.cpu().numpy()
+                )
 
-            val_metrics['epoch'] = i
-            val_metrics['losses'] = val_losses.item()
-            batch_losses_test.append(val_metrics)
+                val_metrics['epoch'] = i
+                val_metrics['losses'] = val_losses.item()
+                batch_losses_test.append(val_metrics)
+                test_epoch.set_postfix(test_loss=val_losses.item())
 
+    if batch_losses[-1]['losses'] < 0.01:
+        break
     print(f"Batch training losses at {i} {batch_losses[-1]}")
     print(f"Batch validation losses at {i} {batch_losses_test[-1]}")
 
