@@ -54,16 +54,17 @@ NUM_CLASSES = 81
 BATCH_SIZE=60
 save_path = 'chekpoints/'
 
-# dataset_val = NusDataset(
-#     IMAGE_PATH, os.path.join(META_PATH, 'test.json'), None)
+dataset_val = NusDataset(
+    IMAGE_PATH, os.path.join(META_PATH, 'test.json'), None)
 
 dataset_train = NusDataset(
     IMAGE_PATH, os.path.join(META_PATH, 'train.json'), None)
 
 sampler_train = DistributedSampler(dataset_train)
+sampler_val = DistributedSampler(dataset_val)
 
 train_dataloader = DataLoader(dataset_train, batch_size=BATCH_SIZE, sampler=sampler_train, collate_fn=collate_fn)
-# test_dataloader = DataLoader(dataset_val, batch_size=BATCH_SIZE, sampler=sampler_val, collate_fn=collate_fn)
+test_dataloader = DataLoader(dataset_val, batch_size=BATCH_SIZE, sampler=sampler_val, collate_fn=collate_fn)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = BaseModel(
@@ -127,25 +128,25 @@ for i in range(0, max_epoch_number):
     """
     Run against test data
     """
-    # with tqdm(test_dataloader, unit="batch") as test_epoch:
-    #     test_epoch.set_description(f"Epoch: {i}")
-    #     with torch.no_grad():
-    #         model.eval()
-    #         for val_imgs, val_targets in test_epoch:
-    #             val_imgs, val_targets = val_imgs.to(device), val_targets.to(device)
-    #             val_result = model(val_imgs)
-    #             val_losses = criterion(val_result, val_targets)
-    #             val_metrics = calculate_metrics(
-    #                 val_result.cpu().numpy(),
-    #                 val_targets.cpu().numpy()
-    #             )
+    with tqdm(test_dataloader, unit="batch") as test_epoch:
+        test_epoch.set_description(f"Epoch: {i}")
+        with torch.no_grad():
+            model.eval()
+            for val_imgs, val_targets in test_epoch:
+                val_imgs, val_targets = val_imgs.to(device), val_targets.to(device)
+                val_result = model(val_imgs)
+                val_losses = criterion(val_result, val_targets)
+                val_metrics = calculate_metrics(
+                    val_result.cpu().numpy(),
+                    val_targets.cpu().numpy()
+                )
 
-    #             batch_loss_test = float(val_losses)
+                batch_loss_test = float(val_losses)
 
-    #             val_metrics['epoch'] = i
-    #             val_metrics['losses'] = batch_loss_test
-    #             batch_losses_test.append(val_metrics)
-    #             test_epoch.set_postfix(test_loss=batch_loss_test, test_acc=val_metrics['accuracy'])
+                val_metrics['epoch'] = i
+                val_metrics['losses'] = batch_loss_test
+                batch_losses_test.append(val_metrics)
+                test_epoch.set_postfix(test_loss=batch_loss_test, test_acc=val_metrics['accuracy'])
 
     """
     Early stoppage if model overfitting
