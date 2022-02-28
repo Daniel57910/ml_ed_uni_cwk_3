@@ -16,14 +16,12 @@ class BasicBlock(nn.Module):
         self.conv_block1 = nn.Sequential(
             nn.Conv2d(channel_input, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
-            nn.ReLU(),
-            nn.Dropout()
+            nn.ReLU()
         )
         self.conv_block2 = nn.Sequential(
             nn.Conv2d(channel_output, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
-            nn.ReLU(),
-            nn.Dropout()
+            nn.ReLU()
         )
 
         if channel_output:
@@ -60,7 +58,6 @@ class AttentionBasicBlock(nn.Module):
         trunk = self.trunk(x)
         out_pool = nn.MaxPool2d(kernel_size=3, stride=2)(out)
         softmax = self.softmax(out_pool)
-        softmax = nn.Dropout()(softmax)
         upsample = self.upsample(softmax)
         trunk_combine = (1 + upsample) * trunk
         return trunk_combine
