@@ -121,7 +121,7 @@ for i in range(0, max_epoch_number):
             result['epoch'] = i
             result['losses'] = batch_loss_value
             batch_losses.append(result)
-            train_epoch.set_postfix(train_loss=loss.item(), train_acc=result['accuracy'])
+            train_epoch.set_postfix(train_loss=batch_loss_value, train_acc=result['accuracy'])
     """
     Run against test data
     """
@@ -138,10 +138,12 @@ for i in range(0, max_epoch_number):
                     val_targets.cpu().numpy()
                 )
 
+                batch_loss_test = float(val_losses)
+
                 val_metrics['epoch'] = i
-                val_metrics['losses'] = float(val_losses)
+                val_metrics['losses'] = batch_loss_test
                 batch_losses_test.append(val_metrics)
-                test_epoch.set_postfix(test_loss=float(val_losses), test_acc=val_metrics['accuracy'])
+                test_epoch.set_postfix(test_loss=batch_loss_test, test_acc=val_metrics['accuracy'])
 
     """
     Early stoppage if model overfitting
