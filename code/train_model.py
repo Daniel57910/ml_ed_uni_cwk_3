@@ -109,7 +109,7 @@ for i in range(0, max_epoch_number):
 
             model_result = model(imgs)
             loss = criterion(model_result, targets)
-            batch_loss_value = loss.item()
+            batch_loss_value = float(loss)
             loss.backward()
             optimizer.step()
             with torch.no_grad():
@@ -139,9 +139,9 @@ for i in range(0, max_epoch_number):
                 )
 
                 val_metrics['epoch'] = i
-                val_metrics['losses'] = val_losses.item()
+                val_metrics['losses'] = float(val_losses)
                 batch_losses_test.append(val_metrics)
-                test_epoch.set_postfix(test_loss=val_losses.item(), test_acc=val_metrics['accuracy'])
+                test_epoch.set_postfix(test_loss=float(val_losses), test_acc=val_metrics['accuracy'])
 
     """
     Early stoppage if model overfitting
