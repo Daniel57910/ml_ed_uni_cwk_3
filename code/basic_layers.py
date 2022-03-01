@@ -17,14 +17,12 @@ class BasicBlock(nn.Module):
             nn.Conv2d(channel_input, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Dropout(p=0.4)
         )
         self.conv_block2 = nn.Sequential(
             nn.Conv2d(channel_output, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Dropout(p=0.4)
         )
 
@@ -32,7 +30,6 @@ class BasicBlock(nn.Module):
             self.residual_block = nn.Sequential(
                 nn.Conv2d(channel_input, channel_output, 3, padding=1),
                 nn.BatchNorm2d(channel_output),
-                nn.MaxPool2d(kernel_size=2, stride=2),
                 nn.Dropout(p=0.3)
             )
 
