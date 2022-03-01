@@ -4,9 +4,9 @@
 #SBATCH --gres=gpu:4
 #SBATCH --mem=20000  # memory in Mb
 #SBATCH --cpus-per-task=8
-#SBATCH --partition=Teach-LongJobs
-#SBATCH --mail-user=s0905577@ed.ac.uk
-
+#SBATCH --partition=Teach-Standard
+#SBATCH --mail-user=s0905577
+#SBATCH --mail-type=ALL
 
 export CUDA_HOME=/opt/cuda-9.0.176.1/
 

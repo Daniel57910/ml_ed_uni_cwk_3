@@ -49,7 +49,7 @@ def calculate_metrics(pred, target, threshold=0.5):
     }
 
 learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
-MAX_EPOCH_NUMBER = 100 # Number of epochs for training
+MAX_EPOCH_NUMBER = 60 # Number of epochs for training
 dist.init_process_group(backend='nccl')
 NUM_CLASSES = 27
 BATCH_SIZE=30
