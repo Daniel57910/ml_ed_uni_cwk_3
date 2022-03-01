@@ -68,13 +68,9 @@ class BaseModel(nn.Module):
 
     def forward(self, x):
         output_1 = self.conv_1(x)
-        print("Conv1 layer finished")
         res_layer = self.res_block_1(output_1)
-        print("Res layer finished")
         att_layer = self.att_block_1(res_layer)
-        print("Att layer 1 finished")
         res_layer_2 = self.res_block_2(att_layer)
-        print("Res layer 2 finished")
         linear_layer_1 = self.linear_layer_1(res_layer_2)
         linear_layer_2 = self.linear_layer_2(linear_layer_1)
         activation_layer = self.activation_layer(linear_layer_2)

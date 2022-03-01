@@ -52,7 +52,7 @@ learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
 MAX_EPOCH_NUMBER = 100 # Number of epochs for training
 dist.init_process_group(backend='nccl')
 NUM_CLASSES = 27
-BATCH_SIZE=40
+BATCH_SIZE=30
 save_path = 'chekpoints/'
 
 dataset_val = NusDataset(
