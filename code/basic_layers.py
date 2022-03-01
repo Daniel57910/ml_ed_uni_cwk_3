@@ -16,20 +16,25 @@ class BasicBlock(nn.Module):
         self.conv_block1 = nn.Sequential(
             nn.Conv2d(channel_input, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
-            nn.ReLU()
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(p=0.4)
         )
         self.conv_block2 = nn.Sequential(
             nn.Conv2d(channel_output, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
-            nn.ReLU()
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(p=0.4)
         )
 
         if channel_output:
             self.residual_block = nn.Sequential(
                 nn.Conv2d(channel_input, channel_output, 3, padding=1),
-                nn.BatchNorm2d(channel_output)
+                nn.BatchNorm2d(channel_output),
+                nn.MaxPool2d(kernel_size=2, stride=2),
+                nn.Dropout(p=0.3)
             )
-
 
     def forward(self, x):
         residual = x
@@ -58,6 +63,7 @@ class AttentionBasicBlock(nn.Module):
         trunk = self.trunk(x)
         out_pool = nn.MaxPool2d(kernel_size=3, stride=2)(out)
         softmax = self.softmax(out_pool)
+        softmax = nn.Dropout(p=0.3)(softmax)
         upsample = self.upsample(softmax)
         trunk_combine = (1 + upsample) * trunk
         return trunk_combine

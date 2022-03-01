@@ -1,3 +1,4 @@
+from tkinter.tix import MAX
 from dataset import NusDataset
 import os
 import numpy as np
@@ -48,17 +49,17 @@ def calculate_metrics(pred, target, threshold=0.5):
     }
 
 learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
-max_epoch_number = 35 # Number of epochs for training
+MAX_EPOCH_NUMBER = 100 # Number of epochs for training
 dist.init_process_group(backend='nccl')
 NUM_CLASSES = 81
-BATCH_SIZE=60
+BATCH_SIZE=40
 save_path = 'chekpoints/'
 
 dataset_val = NusDataset(
-    IMAGE_PATH, os.path.join(META_PATH, 'test.json'), None)
+    IMAGE_PATH, os.path.join(META_PATH, 'small_test.json'), None)
 
 dataset_train = NusDataset(
-    IMAGE_PATH, os.path.join(META_PATH, 'train.json'), None)
+    IMAGE_PATH, os.path.join(META_PATH, 'small_train.json'), None)
 
 sampler_train = DistributedSampler(dataset_train)
 sampler_val = DistributedSampler(dataset_val)
@@ -70,8 +71,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = BaseModel(
    NUM_CLASSES
 )
-model.to(device)
 
+model.to(device)
 if torch.cuda.is_available():
     device_count = torch.cuda.device_count()
     if device_count > 1:
@@ -97,7 +98,7 @@ iteration = 0
 running_loss = 0
 batch_losses = []
 batch_losses_test = []
-for i in range(0, max_epoch_number):
+for i in range(0, MAX_EPOCH_NUMBER):
 
     """
     Run against training data
@@ -153,17 +154,13 @@ for i in range(0, max_epoch_number):
     """
     print(f"Batch training losses at {i} {batch_losses[-1]}")
     print(f"Batch validation losses at {i} {batch_losses_test[-1]}")
-    learning_completed = [l['losses'] for l in batch_losses if l['losses'] < 0.01]
-    if batch_losses[-1]['losses'] < 0.01 or len(learning_completed) > 1:
-        print("Early stoppage implementation")
-        break
 
 time = datetime.now().strftime("%Y_%m_%d-%H:%M")
 df = pd.DataFrame(batch_losses)
-# df_val = pd.DataFrame(batch_losses_test)
+df_val = pd.DataFrame(batch_losses_test)
 
 df.to_csv(f"training_results_{time}.csv")
-# df_val.to_csv(f"validation_results_{time}.csv")
+df_val.to_csv(f"validation_results_{time}.csv")
 
 
 

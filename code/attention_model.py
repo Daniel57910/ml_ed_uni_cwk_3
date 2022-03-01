@@ -15,14 +15,31 @@ class BaseModel(nn.Module):
         self.res_block_1 = BasicBlock(64)
         self.att_block_1 = AttentionBasicBlock(64)
         self.res_block_2 = BasicBlock(64, 32)
-        self.flat_layer_1 = nn.Sequential(
+        self.linear_layer_1 = nn.Sequential(
             nn.Flatten(start_dim=1),
             nn.Linear(
                 in_features=253472,
-                out_features=n_classes,
-                bias=True
+                out_features=256
+            ),
+            nn.ReLU(),
+            nn.Dropout(p=0.3)
+        )
+
+        self.linear_layer_2 = nn.Sequential(
+            nn.Linear(
+                in_features=256,
+                out_features=128
+            ),
+            nn.ReLU(),
+            nn.Dropout()
+        )
+        self.activation_layer = nn.Sequential(
+            nn.Linear(
+                in_features=128,
+                out_features=n_classes
             )
         )
+
         self._initialize_weights()
         self.activation = nn.Sigmoid()
         self.n_classes = n_classes
@@ -32,7 +49,8 @@ class BaseModel(nn.Module):
             nn.Conv2d(input_channels, out_features, kernel_size),
             nn.BatchNorm2d(out_features, affine=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.ReLU(inplace=True)
+            nn.ReLU(),
+            nn.Dropout(p=0.2)
         ])
 
     def _initialize_weights(self):
@@ -53,8 +71,10 @@ class BaseModel(nn.Module):
         res_layer = self.res_block_1(output_1)
         att_layer = self.att_block_1(res_layer)
         res_layer_2 = self.res_block_2(att_layer)
-        flat_layer_1 = self.flat_layer_1(res_layer_2)
-        activation = self.activation(flat_layer_1)
+        linear_layer_1 = self.linear_layer_1(res_layer_2)
+        linear_layer_2 = self.linear_layer_2(linear_layer_1)
+        activation_layer = self.activation_layer(linear_layer_2)
+        activation = self.activation(activation_layer)
         """
         Casting required for BCE loss
         """

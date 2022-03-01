@@ -1,4 +1,5 @@
 import torch
+        linear_layer_1 = self.linear_layer_1(res_layer_2)
 import torch.nn as nn
 from torch.nn import init
 import functools
