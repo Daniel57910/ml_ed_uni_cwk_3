@@ -1,7 +1,7 @@
 #!/bin/sh
 #SBATCH -N 4	  # nodes requested
 #SBATCH -n 4	  # tasks requested
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:1
 #SBATCH --mem=20000  # memory in Mb
 #SBATCH --cpus-per-task=8
 #SBATCH --partition=Teach-Standard
