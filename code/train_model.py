@@ -1,4 +1,3 @@
-from tkinter.tix import MAX
 from dataset import NusDataset
 import os
 import numpy as np
@@ -17,11 +16,9 @@ torch.cuda.manual_seed(2020)
 np.random.seed(2020)
 random.seed(2020)
 torch.backends.cudnn.deterministic = True
-import torch.optim as optim
 from datetime import datetime
 import pandas as pd
 from tqdm import tqdm
-
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data.distributed import DistributedSampler
@@ -30,10 +27,12 @@ from torch import optim
 import torch.distributed.autograd as dist_autograd
 
 
+torch.cuda._lazy_init()
+dist.init_process_group(backend='nccl')
+
 def collate_fn(batch):
     batch = list(filter(lambda x: x is not None, batch))
     return torch.utils.data.dataloader.default_collate(batch)
-
 
 # Use threshold to define predicted labels and invoke sklearn's metrics with different averaging strategies.
 def calculate_metrics(pred, target, threshold=0.5):
@@ -49,10 +48,11 @@ def calculate_metrics(pred, target, threshold=0.5):
     }
 
 learning_rate = weight_decay = 1e-4 # Learning rate and weight decay
-MAX_EPOCH_NUMBER = 70 # Number of epochs for training
-dist.init_process_group(backend='nccl')
+print("Starting code")
+MAX_EPOCH_NUMBER = 50 # Number of epochs for training
 NUM_CLASSES = 81
-BATCH_SIZE=30
+BATCH_SIZE=100
+
 save_path = 'chekpoints/'
 
 dataset_val = NusDataset(
@@ -81,22 +81,19 @@ test_dataloader = DataLoader(
     collate_fn=collate_fn)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"found device {device}")
 model = BaseModel(
    NUM_CLASSES
 )
-
 model.to(device)
-if torch.cuda.is_available():
-    device_count = torch.cuda.device_count()
-    if device_count > 1:
-        print(f"Parralelising training across {device_count} GPU")
-        model = DDP(
-            model,
-            find_unused_parameters=True
-        )
-        print(f'Use multi GPU', device)
-    else:
-        print('Use GPU', device)
+
+model = DDP(
+    model,
+    find_unused_parameters=True
+)
+
+print(f"Attaching model to device: {device}")
+print(f"Device count: {torch.cuda.device_count()}")
 
 criterion = nn.BCELoss()
 optimizer = ZeroRedundancyOptimizer(
@@ -106,12 +103,14 @@ optimizer = ZeroRedundancyOptimizer(
     weight_decay=weight_decay
 )
 
+print(f"Criterion {criterion} setup, optimizer {optimizer} setup")
 epoch = 0
 iteration = 0
 running_loss = 0
 batch_losses = []
 batch_losses_test = []
 for i in range(0, MAX_EPOCH_NUMBER):
+    print(f"Training model at epoch {i}")
 
     """
     Run against training data
@@ -126,7 +125,7 @@ for i in range(0, MAX_EPOCH_NUMBER):
 
             model_result = model(imgs)
             loss = criterion(model_result, targets)
-            batch_loss_value = float(loss)
+            batch_loss_value = loss.item()
             loss.backward()
             optimizer.step()
             with torch.no_grad():
@@ -143,6 +142,7 @@ for i in range(0, MAX_EPOCH_NUMBER):
     Run against test data
     """
     with tqdm(test_dataloader, unit="batch") as test_epoch:
+        print(f"Running validation at epoch {i}")
         test_epoch.set_description(f"Epoch: {i}")
         with torch.no_grad():
             model.eval()
@@ -155,7 +155,7 @@ for i in range(0, MAX_EPOCH_NUMBER):
                     val_targets.cpu().numpy()
                 )
 
-                batch_loss_test = float(val_losses)
+                batch_loss_test = val_losses.item()
 
                 val_metrics['epoch'] = i
                 val_metrics['losses'] = batch_loss_test

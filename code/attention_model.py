@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from basic_layers import BasicBlock, AttentionBasicBlock
 from torchvision import models
 import torch.nn.functional as F
-from torchsummary import summary
+# from torchsummary import summary
 import pdb
 
 class BaseModel(nn.Module):
@@ -81,5 +81,4 @@ class BaseModel(nn.Module):
         return activation.double()
 
 
-# model = BaseModel(27)
 # print(summary(model, (3, 180, 180)))

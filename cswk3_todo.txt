@@ -1,26 +1,20 @@
-Understand structure of file with respect to images
-Write down structure of file wrt images
-Understand classification options; read paper
-Begin attention learning; begin putting together model
+cp slurm-1357428.out /afs/inf.ed.ac.uk/user/s09/s0905577/
+scp s0905577@ssh.inf.ed.ac.uk:/afs/inf.ed.ac.uk/user/s09/s0905577/hello .
 
-https://www.youtube.com/watch?v=SysgYptB198&ab_channel=DeepLearningAI
+Read articles multi-label classification; writeup
+https://machinelearningmastery.com/multi-label-classification-with-deep-learning/
+https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network-to-classify-satellite-photos-of-the-amazon-rainforest/
+https://towardsdatascience.com/multi-label-image-classification-with-neural-network-keras-ddc1ab1afede
+https://paperswithcode.com/task/multi-label-image-classification
+https://arxiv.org/abs/2011.14027
 
 
-Begin understanding attention layer and transformers
-https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html
-https://towardsdatascience.com/illustrated-self-attention-2d627e33b20a
-https://lilianweng.github.io/lil-log/2020/04/07/the-transformer-family.html
+Image zip pushed to GPU; unzipped
+Batches updated to 2000; working
+Plan next steps 
 
-UML Code
-https://github.com/0aqz0/pytorch-attention-mechanism/blob/master/rnn-with-attention.py
+Methods 1st pass
+Methods 2nd pass
 
-Begin implementation
-- Get data loaded
-- Understand data directory and structure
-- Setup simple CNN
-- Setup simple CNN w attention 
 
- 
-Launch different EC2 that supports opening images
-Put together UML of preprocessing/data generation 
-Begin model development 
+

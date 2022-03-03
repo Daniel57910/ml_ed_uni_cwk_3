@@ -1,6 +1,6 @@
 # Python gitignore
 #Reference: https://github.com/github/gitignore/blob/master/Python.gitignore
-
+*.csv
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -8,7 +8,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+*.zip
 # Distribution / packaging
 .Python
 build/
@@ -191,3 +191,4 @@ Pipfile*
 builds/
 *.png
 *.jpg
+images/
