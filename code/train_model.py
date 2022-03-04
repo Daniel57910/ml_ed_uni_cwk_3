@@ -29,10 +29,7 @@ def collate_fn(batch):
 
 # Use threshold to define predicted labels and invoke sklearn's metrics with different averaging strategies.
 def calculate_metrics(pred, target, threshold=0.5):
-    metric_fn = MetricBuilder.build_evaluation_metric("map_2d", async_mode=True, num_classes=NUM_CLASSES)
     pred = np.array(pred > threshold, dtype=float)
-    metric_fn.add(pred, target)
-    map_score = metric_fn.value()['mAP']
     return {
         'accuracy': accuracy_score(y_true=target, y_pred=pred),
         'micro/precision': precision_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
@@ -41,7 +38,6 @@ def calculate_metrics(pred, target, threshold=0.5):
         'macro/precision': precision_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
         'macro/recall': recall_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
         'macro/f1': f1_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
-        "map_score": map_score,
         "hamming_loss": hamming_loss(y_true=target, y_pred=pred)
     }
 
