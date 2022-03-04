@@ -41,7 +41,6 @@ class BaseModel(nn.Module):
         )
 
         self._initialize_weights()
-        self.activation = nn.Sigmoid()
         self.n_classes = n_classes
 
     def _make_layer(self, input_channels, out_features, kernel_size):
@@ -75,11 +74,7 @@ class BaseModel(nn.Module):
         linear_layer_1 = self.linear_layer_1(res_layer_2)
         linear_layer_2 = self.linear_layer_2(linear_layer_1)
         activation_layer = self.activation_layer(linear_layer_2)
-        activation = self.activation(activation_layer)
-        """
-        Casting required for BCE loss
-        """
-        return activation.double()
+        return activation_layer
 
 
 # print(summary(model, (3, 180, 180)))

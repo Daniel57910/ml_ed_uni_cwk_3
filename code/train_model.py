@@ -125,7 +125,7 @@ def main():
     print(f"Attaching model to device: {device}")
     print(f"Device count: {torch.cuda.device_count()}")
 
-    criterion = nn.BCELoss()
+    criterion = torch.nn.BCEWithLogitsLoss()
     optimizer = ZeroRedundancyOptimizer(
         model.parameters(),
         optimizer_class=torch.optim.Adam,
