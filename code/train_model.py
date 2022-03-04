@@ -20,7 +20,7 @@ from torch.distributed.optim import ZeroRedundancyOptimizer
 from torch import optim
 import torch.distributed.autograd as dist_autograd
 from mean_average_precision import MetricBuilder
-from torch.cuda.amp import GradScaler
+from torch.cuda.amp import GradScaler, autocast
 import argparse
 
 def collate_fn(batch):
@@ -141,49 +141,51 @@ def main():
         print(f"Training model at epoch {i}")
         model.train()
         with tqdm(train_dataloader, unit="batch") as train_epoch:
-            for imgs, targets in train_epoch:
-                train_epoch.set_description(f"Epoch: {i}")
-                imgs, targets = imgs.to(device).half(), targets.to(device)
+           with autocast():
+                for imgs, targets in train_epoch:
+                    train_epoch.set_description(f"Epoch: {i}")
+                    imgs, targets = imgs.to(device).half(), targets.to(device)
 
-                optimizer.zero_grad()
+                    optimizer.zero_grad()
 
-                model_result = model(imgs)
-                loss = criterion(model_result, targets)
-                batch_loss_value = loss.item()
-                scaler.scale(loss).backward()
-                scaler.step(optimizer)
-                scaler.update()
-                with torch.no_grad():
-                    result = calculate_metrics(
-                    model_result.cpu().numpy(),
-                    targets.cpu().numpy()
-                )
-
-                result['epoch'] = i
-                result['losses'] = batch_loss_value
-                batch_losses.append(result)
-                train_epoch.set_postfix(train_loss=batch_loss_value, train_acc=result['accuracy'])
-
-        with tqdm(test_dataloader, unit="batch") as test_epoch:
-            print(f"Running validation at epoch {i}")
-            test_epoch.set_description(f"Epoch: {i}")
-            with torch.no_grad():
-                model.eval()
-                for val_imgs, val_targets in test_epoch:
-                    val_imgs, val_targets = val_imgs.to(device).half(), val_targets.to(device)
-                    val_result = model(val_imgs)
-                    val_losses = criterion(val_result, val_targets)
-                    val_metrics = calculate_metrics(
-                        val_result.cpu().numpy(),
-                        val_targets.cpu().numpy()
+                    model_result = model(imgs)
+                    loss = criterion(model_result, targets)
+                    batch_loss_value = loss.item()
+                    scaler.scale(loss).backward()
+                    scaler.step(optimizer)
+                    scaler.update()
+                    with torch.no_grad():
+                        result = calculate_metrics(
+                        model_result.cpu().numpy(),
+                        targets.cpu().numpy()
                     )
 
-                    batch_loss_test = val_losses.item()
+                    result['epoch'] = i
+                    result['losses'] = batch_loss_value
+                    batch_losses.append(result)
+                    train_epoch.set_postfix(train_loss=batch_loss_value, train_acc=result['accuracy'])
 
-                    val_metrics['epoch'] = i
-                    val_metrics['losses'] = batch_loss_test
-                    batch_losses_test.append(val_metrics)
-                    test_epoch.set_postfix(test_loss=batch_loss_test, test_acc=val_metrics['accuracy'])
+        with tqdm(test_dataloader, unit="batch") as test_epoch:
+            with autocast():
+                print(f"Running validation at epoch {i}")
+                test_epoch.set_description(f"Epoch: {i}")
+                with torch.no_grad():
+                    model.eval()
+                    for val_imgs, val_targets in test_epoch:
+                        val_imgs, val_targets = val_imgs.to(device).half(), val_targets.to(device)
+                        val_result = model(val_imgs)
+                        val_losses = criterion(val_result, val_targets)
+                        val_metrics = calculate_metrics(
+                            val_result.cpu().numpy(),
+                            val_targets.cpu().numpy()
+                        )
+
+                        batch_loss_test = val_losses.item()
+
+                        val_metrics['epoch'] = i
+                        val_metrics['losses'] = batch_loss_test
+                        batch_losses_test.append(val_metrics)
+                        test_epoch.set_postfix(test_loss=batch_loss_test, test_acc=val_metrics['accuracy'])
 
     time = datetime.now().strftime("%Y_%m_%d_%H")
     df = pd.DataFrame(batch_losses)
