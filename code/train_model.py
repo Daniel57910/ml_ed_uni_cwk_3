@@ -93,7 +93,7 @@ def parse_args():
 
 def main():
 
-    torch.cuda._lazy_init()
+    # torch.cuda._lazy_init()
     torch.backends.cudnn.benchmark = True
     torch.backends.cudnn.deterministic = True
     torch.manual_seed(2020)
