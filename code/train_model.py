@@ -107,7 +107,7 @@ def main():
     print(f"found device {device}")
     print(f"Model to use {model_name}, csv output file {f_name}")
 
-    if model_name == "AttentionLearnV1":
+    if model_name == "att_v1":
         model = BaseModel(
            NUM_CLASSES
         )
