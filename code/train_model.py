@@ -79,7 +79,7 @@ def load_data(train_path, test_path):
 
 LEARNING_RATE = WEIGHT_DECAY = 1e-4
 MAX_EPOCH_NUMBER = 2
-NUM_CLASSES = 81
+NUM_CLASSES = 27
 # BATCH_SIZE=110
 BATCH_SIZE=30
 IMAGE_PATH = 'images'
