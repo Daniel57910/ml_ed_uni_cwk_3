@@ -2,7 +2,7 @@
 #SBATCH -N 1	  # nodes requested
 #SBATCH -n 1	  # tasks requested
 #SBATCH --mem=10000  # memory in Mb
-#SBATCH --gpu=gpu:1
+#SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
 #SBATCH --partition=Teach-LongJobs
 #SBATCH --mail-user=s0905577
