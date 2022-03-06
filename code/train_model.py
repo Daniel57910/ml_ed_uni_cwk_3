@@ -22,26 +22,60 @@ import torch.distributed.autograd as dist_autograd
 # from mean_average_precision import MetricBuilder
 from torch.cuda.amp import GradScaler, autocast
 import argparse
+from coco_datasets import COCO2014
+import torchvision.transforms as transforms
+
 
 def collate_fn(batch):
     batch = list(filter(lambda x: x is not None, batch))
     return torch.utils.data.dataloader.default_collate(batch)
 
-# Use threshold to define predicted labels and invoke sklearn's metrics with different averaging strategies.
-def calculate_metrics(pred, target, threshold=0.5):
-    pred = np.array(pred > threshold, dtype=float)
-    return {
-        'accuracy': accuracy_score(y_true=target, y_pred=pred),
-        'micro/precision': precision_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
-        'micro/recall': recall_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
-        'micro/f1': f1_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
-        'macro/precision': precision_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
-        'macro/recall': recall_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
-        'macro/f1': f1_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
-        "hamming_loss": hamming_loss(y_true=target, y_pred=pred)
-    }
 
-def load_data(train_path, test_path):
+# def acc_lzw(y_true, y_pred):
+#     a=np.zeros(len(y_pred))
+#     for i in range(len(y_pred)):
+#         a[i] = 1 if y_pred[i] > 0.5 else 0
+#     right = (y_pred == y_true).sum()
+#     return right / len(y_true)
+
+
+def load_coco_dataset(file_path, BATCH_SIZE):
+    transform = transforms.Compose([
+        transforms.RandomResizedCrop(180, scale=(0.1, 1.5), ratio=(1.0, 1.0)),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    # COCO2014
+    dataset_train = COCO2014(file_path, phase='train', transform=transform)
+    dataset_val = COCO2014(file_path, phase='val', transform=transform)
+
+    # sampler_train = DistributedSampler(dataset_train)
+    # sampler_val = DistributedSampler(dataset_val)
+
+    train_dataloader = DataLoader(
+        dataset_train,
+        batch_size=BATCH_SIZE,
+        # sampler=sampler_train,
+        num_workers=8,
+        pin_memory=True,
+        collate_fn=collate_fn)
+
+    test_dataloader = DataLoader(
+        dataset_val,
+        batch_size=BATCH_SIZE,
+        # sampler=sampler_val,
+        num_workers=8,
+        pin_memory=True,
+        collate_fn=collate_fn)
+
+    return train_dataloader, test_dataloader
+
+
+def load_data(train_path, test_path, BATCH_SIZE):
+    IMAGE_PATH = 'images'
+    META_PATH = 'nus_wide'
     dataset_val = NusDataset(
         IMAGE_PATH,
         os.path.join(META_PATH, test_path),
@@ -73,22 +107,37 @@ def load_data(train_path, test_path):
 
     return train_dataloader, test_dataloader
 
-LEARNING_RATE = WEIGHT_DECAY = 1e-4
-MAX_EPOCH_NUMBER = 70
-NUM_CLASSES = 81
-# BATCH_SIZE=110
-BATCH_SIZE=110
-IMAGE_PATH = 'images'
-META_PATH = 'nus_wide'
+
+# Use threshold to define predicted labels and invoke sklearn's metrics with different averaging strategies.
+def calculate_metrics(pred, target, threshold=0.5):
+    pred = np.array(pred > threshold, dtype=float)
+    return {
+        'accuracy': accuracy_score(y_true=target, y_pred=pred),
+        'micro/precision': precision_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
+        'micro/recall': recall_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
+        'micro/f1': f1_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
+        'macro/precision': precision_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
+        'macro/recall': recall_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
+        'macro/f1': f1_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
+        "hamming_loss": hamming_loss(y_true=target, y_pred=pred)
+    }
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_name", "-m", help="name of model", default="att_v1")
+    parser.add_argument("--model_name", "-m", help="name of model", default="resnet_18")
     parser.add_argument("--f_name", "-f", help="name of output file name", default="att_v1")
+    parser.add_argument('--dataset', default='COCO', help='the dataset in training: COCO or Nus')
     args = parser.parse_args()
-    return args.model_name, args.f_name
+    return args.model_name, args.f_name, args.dataset
+
 
 def main():
+    LEARNING_RATE = WEIGHT_DECAY = 1e-4
+    MAX_EPOCH_NUMBER = 70
+    # NUM_CLASSES = 81
+    # BATCH_SIZE=110
+    BATCH_SIZE = 4
 
     # torch.cuda._lazy_init()
     torch.backends.cudnn.benchmark = True
@@ -97,41 +146,49 @@ def main():
     torch.cuda.manual_seed(2020)
     np.random.seed(2020)
     random.seed(2020)
-    dist.init_process_group(backend='nccl')
+    #    dist.init_process_group(backend='nccl')  # 多机多卡之间的通讯方式 multi mdpp
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model_name, f_name = parse_args()
+    model_name, f_name, dataset = parse_args()
     print(f"found device {device}")
     print(f"Model to use {model_name}, csv output file {f_name}")
+    if dataset.lower() == 'coco':
+        coco_path = r'D:\Code\data\coco'
+        NUM_CLASSES = 80
+        train_dataloader, test_dataloader = load_coco_dataset(coco_path, BATCH_SIZE)
+    elif dataset.lower() == 'nus':
+        NUM_CLASSES = 81
+        train_dataloader, test_dataloader = load_data('train.json', 'test.json', BATCH_SIZE)
 
     if model_name == "att_v1":
         model = BaseModel(
-           NUM_CLASSES
+            NUM_CLASSES
         )
     if model_name == "resnet_18":
         model = get_resnet_18(NUM_CLASSES)
 
     model.to(device)
 
-    model = DDP(
-        model,
-        find_unused_parameters=True
-    )
+    # model = DDP(
+    #     model,
+    #     find_unused_parameters=True
+    # )
 
     print(f"Attaching model to device: {device}")
     print(f"Device count: {torch.cuda.device_count()}")
 
     criterion = nn.BCEWithLogitsLoss()
-    optimizer = ZeroRedundancyOptimizer(
-        model.parameters(),
-        optimizer_class=torch.optim.Adam,
-        lr=LEARNING_RATE,
-        weight_decay=WEIGHT_DECAY
-    )
+    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
+    # optimizer = ZeroRedundancyOptimizer(
+    #     model.parameters(),
+    #     optimizer_class=torch.optim.Adam,
+    #     lr=LEARNING_RATE,
+    #     weight_decay=WEIGHT_DECAY
+    # )
 
     scaler = GradScaler()
     print(f"Criterion {criterion} setup, optimizer {optimizer} setup")
-    train_dataloader, test_dataloader = load_data('train.json', 'test.json')
+
     batch_losses = []
     batch_losses_test = []
     for i in range(0, MAX_EPOCH_NUMBER):
@@ -151,9 +208,9 @@ def main():
                 scaler.update()
                 with torch.no_grad():
                     result = calculate_metrics(
-                    model_result.cpu().numpy(),
-                    targets.cpu().numpy()
-                )
+                        model_result.cpu().numpy(),
+                        targets.cpu().numpy()
+                    )
 
                 result['epoch'] = i
                 result['losses'] = batch_loss_value
@@ -195,6 +252,7 @@ def main():
     print(f"Saving results to {results_directory}")
     df.to_csv(f"{results_directory}/{f_name}_training_{time_in_minutes}.csv")
     df_val.to_csv(f"{results_directory}/{f_name}_validation_{time_in_minutes}.csv")
+
 
 if __name__ == "__main__":
     main()
