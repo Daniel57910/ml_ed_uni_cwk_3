@@ -1,12 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-RESULTS_FILES_DIR = 'results_4_mar_2'
+RESULTS_FILES_DIR = 'results_2022_03_06_10'
 
 
 
 df_train, df_val = (
-    pd.read_csv(RESULTS_FILES_DIR + "/training_results_2022_03_04_18_att_v1.csv"),
-    pd.read_csv(RESULTS_FILES_DIR + "/validation_results_2022_03_04_18_att_v1.csv"),
+    pd.read_csv(RESULTS_FILES_DIR + "/training_10_35.csv"),
+    pd.read_csv(RESULTS_FILES_DIR + "/validation_10_35.csv"),
 )
 
 df_train, df_val = (
@@ -32,7 +32,7 @@ plotting_meta = [
         "title": "BCE on training and validation dataset"
     },
     {
-        "cols": ["accuracy_train", "accuracy_val"],
+        "cols":["accuracy_train", "accuracy_val"],
         "title": "Accuracy score on training and validation dataset"
     }
 ]
