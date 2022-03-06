@@ -1,0 +1,26 @@
+cp slurm-1357428.out /afs/inf.ed.ac.uk/user/s09/s0905577/
+scp s0905577@ssh.inf.ed.ac.uk:/afs/inf.ed.ac.uk/user/s09/s0905577/hello .
+
+Read articles multi-label classification; writeup
+https://machinelearningmastery.com/how-to-develop-a-convolutional-neural-network-to-classify-satellite-photos-of-the-amazon-rainforest/
+https://paperswithcode.com/task/multi-label-image-classification
+https://arxiv.org/abs/2011.14027
+
+Implement fast code with NUS fast on GPU for 10 epoch, ensure gradient similar 
+
+Implement fast code with RESNET 10 epoch; ensure learning
+Implement fast code on RESNET 90 epoch; submit to SLURM
+
+Methods and explanation of model writeup 1st pass
+Methods and explanation of model writeup 2nd pass
+
+Plan next steps 
+
+Enhance model/attention mechanism; writeup according to paper 
+
+
+If time; test out other attention mechanisms 
+
+
+
+

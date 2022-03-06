@@ -1,0 +1,393 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.5.21)  3 MAR 2022 17:28
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**/Users/DaMiller/Documents/side_projects/ed_uni_year_2/applied_ml/assignment_three/assignment_writeup/writeup.tex
+(/Users/DaMiller/Documents/side_projects/ed_uni_year_2/applied_ml/assignment_three/assignment_writeup/writeup.tex
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18> (/usr/local/texlive/2021/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
+)
+\c@part=\count179
+\c@section=\count180
+\c@subsection=\count181
+\c@subsubsection=\count182
+\c@paragraph=\count183
+\c@subparagraph=\count184
+\c@figure=\count185
+\c@table=\count186
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/tree-dvips/lingmacros.sty
+\c@enums=\count187
+\widelabel=\dimen139
+\c@tempcnt=\count188
+\c@enumsi=\count189
+\eeindent=\dimen140
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/tree-dvips/tree-dvips.sty
+tree-dvips version .91 of May 16, 1995
+\nodemargin=\dimen141
+\treelinewidth=\dimen142
+\dashlength=\dimen143
+\arrowwidth=\dimen144
+\arrowlength=\dimen145
+\arrowinset=\dimen146
+\pos@t=\toks15
+\pos@b=\toks16
+\pos@l=\toks17
+\pos@r=\toks18
+\pos@tl=\toks19
+\pos@tr=\toks20
+\pos@bl=\toks21
+\pos@br=\toks22
+\@arrow=\count190
+\@tempdimc=\dimen147
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks23
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2020/08/30 v1.4c Standard LaTeX Graphics (DPC,SPQR)
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen148
+\Gin@req@width=\dimen149
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/subfiles/subfiles.sty
+Package: subfiles 2020/11/14 v2.2 Multi-file projects (package)
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/import/import.sty
+Package: import 2020/04/01  v 6.2
+)) (/usr/local/texlive/2021/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2020/09/23 v2.17i AMS math features
+\@mathmargin=\skip49
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2021/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks24
+\ex@=\dimen150
+)) (/usr/local/texlive/2021/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen151
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count191
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count192
+\leftroot@=\count193
+LaTeX Info: Redefining \overline on input line 399.
+\classnum@=\count194
+\DOTSCASE@=\count195
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box47
+\strutbox@=\box48
+\big@size=\dimen152
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count196
+\c@MaxMatrixCols=\count197
+\dotsspace@=\muskip16
+\c@parentequation=\count198
+\dspbrk@lvl=\count199
+\tag@help=\toks25
+\row@=\count266
+\column@=\count267
+\maxfields@=\count268
+\andhelp@=\toks26
+\eqnshift@=\dimen153
+\alignsep@=\dimen154
+\tagshift@=\dimen155
+\tagwidth@=\dimen156
+\totwidth@=\dimen157
+\lineht@=\dimen158
+\@envbody=\toks27
+\multlinegap=\skip50
+\multlinetaggap=\skip51
+\mathdisplay@stack=\toks28
+LaTeX Info: Redefining \[ on input line 2923.
+LaTeX Info: Redefining \] on input line 2924.
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
+Package: algpseudocode 
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count269
+\c@ALG@rem=\count270
+\c@ALG@nested=\count271
+\ALG@tlm=\skip52
+\ALG@thistlm=\skip53
+\c@ALG@Lnr=\count272
+\c@ALG@blocknr=\count273
+\c@ALG@storecount=\count274
+\c@ALG@tmpcounter=\count275
+\ALG@tmplength=\skip54
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/subfig/subfig.sty
+Package: subfig 2005/06/28 ver: 1.3 subfig package
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2020/10/26 v3.5g Customizing captions (AR)
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2020/10/21 v2.2e caption3 kernel (AR)
+\captionmargin=\dimen159
+\captionmargin@=\dimen160
+\captionwidth=\dimen161
+\caption@tempdima=\dimen162
+\caption@indent=\dimen163
+\caption@parindent=\dimen164
+\caption@hangindent=\dimen165
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count276
+\c@continuedfloat=\count277
+)
+\c@KVtest=\count278
+\sf@farskip=\skip55
+\sf@captopadj=\dimen166
+\sf@capskip=\skip56
+\sf@nearskip=\skip57
+\c@subfigure=\count279
+\c@subfigure@save=\count280
+\c@lofdepth=\count281
+\c@subtable=\count282
+\c@subtable@save=\count283
+\c@lotdepth=\count284
+\sf@top=\skip58
+\sf@bottom=\skip59
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen167
+\lightrulewidth=\dimen168
+\cmidrulewidth=\dimen169
+\belowrulesep=\dimen170
+\belowbottomsep=\dimen171
+\aboverulesep=\dimen172
+\abovetopsep=\dimen173
+\cmidrulesep=\dimen174
+\cmidrulekern=\dimen175
+\defaultaddspace=\dimen176
+\@cmidla=\count285
+\@cmidlb=\count286
+\@aboverulesep=\dimen177
+\@belowrulesep=\dimen178
+\@thisruleclass=\count287
+\@lastruleclass=\count288
+\@thisrulewidth=\dimen179
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/fontsize/fontsize.sty
+Package: fontsize 2021/03/14 v0.8.1 'fontsize' package. Set main font sizes (Ivan Valbusa)
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+Package: xkeyval 2020/11/20 v2.8 package option processing (HA)
+ (/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+\XKV@toks=\toks29
+\XKV@tempa@toks=\toks30
+)
+\XKV@depth=\count289
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+)) (/usr/local/texlive/2021/texmf-dist/tex/latex/l3packages/xfp/xfp.sty (/usr/local/texlive/2021/texmf-dist/tex/latex/l3kernel/expl3.sty
+Package: expl3 2021-02-18 L3 programming layer (loader) 
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2021-03-18 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count290
+\l__pdf_internal_box=\box49
+))
+Package: xfp 2021-03-12 L3 Floating point unit
+
+LaTeX3 Info: Defining command \fpeval with sig. 'm' on line 37.
+
+
+LaTeX3 Info: Defining command \inteval with sig. 'm' on line 38.
+
+)
+
+LaTeX3 Info: Defining command \printsamples with sig.
+(LaTeX3)     'mmO{tiny,tinyr,tinyrr,tinyrrr,scriptsize,scriptsizer,scriptsizerr,scriptsizerrr,footnotesize,footnotesizer,footnotesizerr,footnotesizerrr,small,smallr,smallrr,smallrrr,normalsize,normalsizer,normalsizerr,normalsizerrr,large,larger,largerr,largerrr,Large,Larger,Largerr,Largerrr,LARGE,LARGEr,LARGErr,LARGErrr,huge,huger,hugerr,hugerrr,Huge,Huger,Hugerr,Hugerrr,HGE,HUGEr,HUGErr,HUGErrr,}'
+(LaTeX3)     on line 1138.
+
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+ (/usr/local/texlive/2021/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+ (/usr/local/texlive/2021/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+))
+\Gm@cnth=\count291
+\Gm@cntv=\count292
+\c@Gm@tempcnt=\count293
+\Gm@bindingoffset=\dimen180
+\Gm@wd@mp=\dimen181
+\Gm@odd@mp=\dimen182
+\Gm@even@mp=\dimen183
+\Gm@layoutwidth=\dimen184
+\Gm@layoutheight=\dimen185
+\Gm@layouthoffset=\dimen186
+\Gm@layoutvoffset=\dimen187
+\Gm@dimlist=\toks31
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/natbib/natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip60
+\bibsep=\skip61
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count294
+)
+
+LaTeX Warning: Unused global option(s):
+    [8pt].
+
+(/Users/DaMiller/Documents/side_projects/ed_uni_year_2/applied_ml/assignment_three/assignment_writeup/writeup.aux)
+\openout1 = `writeup.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+ (/usr/local/texlive/2021/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count295
+\scratchdimen=\dimen188
+\scratchbox=\box50
+\nofMPsegments=\count296
+\nofMParguments=\count297
+\everyMPshowfont=\toks32
+\MPscratchCnt=\count298
+\MPscratchDim=\dimen189
+\MPnumerator=\count299
+\makeMPintoPDFobject=\count300
+\everyMPtoPDFconversion=\toks33
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
+))
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: subfig package v1.3 is loaded.
+Package caption Info: End \AtBeginDocument code.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(56.9055pt, 483.69684pt, 56.90553pt)
+* v-part:(T,H,B)=(56.9055pt, 731.23582pt, 56.90552pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=483.69684pt
+* \textheight=731.23582pt
+* \oddsidemargin=-15.36449pt
+* \evensidemargin=-15.36449pt
+* \topmargin=-52.36449pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=8.25pt plus 3.66628pt minus 1.83372pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+(/Users/DaMiller/Documents/side_projects/ed_uni_year_2/applied_ml/assignment_three/assignment_writeup/writeup.bbl
+Overfull \hbox (17.28583pt too wide) in paragraph at lines 23--1
+[]\OT1/cmr/m/n/10.95 Attention-based learn-ing was first in-tro-duced by Xu Et Al for the pur-pose of im-age cap-tion generation[[]].
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--1
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--1
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--1
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--1
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--1
+
+ []
+
+
+LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <15.84003> not available
+(Font)              size <17.28> substituted on input line 1.
+
+
+LaTeX Font Warning: Font shape `OT1/cmr/bx/n' in size <15.84003> not available
+(Font)              size <17.28> substituted on input line 1.
+
+) [1
+
+
+Non-PDF special ignored!
+<special> header=tree-dvips91.pro
+{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (/Users/DaMiller/Documents/side_projects/ed_uni_year_2/applied_ml/assignment_three/assignment_writeup/writeup.aux)
+
+LaTeX Font Warning: Size substitutions with differences
+(Font)              up to 1.43997pt have occurred.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 5150 strings out of 478994
+ 80749 string characters out of 5858184
+ 401526 words of memory out of 5000000
+ 22586 multiletter control sequences out of 15000+600000
+ 404682 words of font info for 31 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 81i,4n,89p,750b,159s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on /Users/DaMiller/Documents/side_projects/ed_uni_year_2/applied_ml/assignment_three/assignment_writeup/writeup.pdf (1 page, 47260 bytes).
+PDF statistics:
+ 20 PDF objects out of 1000 (max. 8388607)
+ 13 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

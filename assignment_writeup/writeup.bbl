@@ -1,0 +1,37 @@
+\begin{thebibliography}{1}
+
+\bibitem{ba2015multiple}
+Jimmy Ba, Volodymyr Mnih, and Koray Kavukcuoglu.
+\newblock Multiple object recognition with visual attention, 2015.
+
+\bibitem{bello2020attention}
+Irwan Bello, Barret Zoph, Ashish Vaswani, Jonathon Shlens, and Quoc~V. Le.
+\newblock Attention augmented convolutional networks, 2020.
+
+\bibitem{WeiObjDet2021}
+Wei Li, Kai Liu, Lizhe Zhang, and Fei Cheng.
+\newblock Object detection based on an adaptive attention mechanism.
+\newblock {\em Scientific Reports}, 10(1):11307, 2020.
+
+\bibitem{liu2021query2label}
+Shilong Liu, Lei Zhang, Xiao Yang, Hang Su, and Jun Zhu.
+\newblock Query2label: A simple transformer way to multi-label classification,
+  2021.
+
+\bibitem{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N. Gomez, Lukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need, 2017.
+
+\bibitem{wang2017residual}
+Fei Wang, Mengqing Jiang, Chen Qian, Shuo Yang, Cheng Li, Honggang Zhang,
+  Xiaogang Wang, and Xiaoou Tang.
+\newblock Residual attention network for image classification, 2017.
+
+\bibitem{xu2016show}
+Kelvin Xu, Jimmy Ba, Ryan Kiros, Kyunghyun Cho, Aaron Courville, Ruslan
+  Salakhutdinov, Richard Zemel, and Yoshua Bengio.
+\newblock Show, attend and tell: Neural image caption generation with visual
+  attention, 2016.
+
+\end{thebibliography}

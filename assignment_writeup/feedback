@@ -1,0 +1,101 @@
+FEEDBACK:
+
+
+
+(please note that comment categories do not have to match to sections in the submitted report)
+
+
+
+(1) Abstract and Introduction
+
+(how clear is the abstract? does it cover what is reported in the document?)
+
+(clear outline and motivation? research questions? citations to the literature?)
+
+
+
+In the abstract, the first sentence could be: "This project combines attention learning with multi-label classification to improve the accuracy of image classification." And then briefly summarize the main points of your report.
+
+
+
+The intro briefly states the motivation, followed by lit review subsection. The cited papers are at least 10 years old, more recent papers should be included here as well. And then another subsection. These subsections are not really necessary. It may be worth looking at the MLP examples.
+
+
+
+
+
+(2) Research questions and objectives
+
+(clearly and precisely stated?)
+
+
+
+Not well. Research question seems to be, can attention learning be used to increase the accuracy of the multi-label classification model by (Chua et al 2009a) and state of the art models? The itemize formatting needs to be fixed.
+
+
+
+(3) Data set and task
+
+(data set clearly presented? preprocessing? training/test/validation split?
+
+is the task explained? evaluation?)
+
+
+
+The NUS data set is described. This section mentions an appendix, but there is no appendix. Preprocessing and data split not presented.
+
+
+
+(4) Methodology
+
+(explanation of technical approaches? reference to the literature?)
+
+
+
+This section is difficult to follow. Perhaps a very high level diagram would help. Third paragraph needs a reference. Which part(s) of the model are novel?
+
+
+
+(5) Experiments
+
+(have appropriate baseline experiments been carried out? clear presentation of results?
+
+clear what each experiment tells us / hypothesis? reproducible?)
+
+
+
+Baseline experiments have not worked as hoped. Instead of "figures below, should say Figure 4 and 5. Those figures show training and validation, not test. A concise definition of your model's architecture and a table of parameters could be added here.
+
+
+
+(6) Interim conclusions
+
+(how does the work done so far match to the objectives? are changes necessary?
+
+are the conclusions clearly expressed?)
+
+
+
+There has been an effort, but methods tried so far failed to generalize to the validation set. This could be due to an error in the implementation of your model.
+
+
+
+(7) Plan
+
+(is there a clear plan for the remainder of the project? have any risks been discussed?
+
+is there a need for a backup plan, and if so what is it?
+
+is the project feasible given time and resources?)
+
+
+
+No. Plan is very short, lacks details, risk assessment, and backup plan.
+
+
+
+(8) Other Comments
+
+
+
+Figures 1,3 and Table 1 are too large and not informative enough. There is an 8 page limit for CW4. You will need to allocate space carefully to maximize your score.

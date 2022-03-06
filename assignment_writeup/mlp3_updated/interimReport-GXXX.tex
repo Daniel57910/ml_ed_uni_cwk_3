@@ -1,0 +1,257 @@
+%% Template for MLP Coursework 3
+
+%% Based on  LaTeX template for ICML 2017 - example_paper.tex at 
+%%  https://2017.icml.cc/Conferences/2017/StyleAuthorInstructions
+
+\documentclass{article}
+\input{mlp2021_includes}
+%% You probably do not need to change anything above this comment
+\usepackage{tabularx} % in the preamble
+\usepackage[toc,page]{appendix}
+%% REPLACE this with your project title, group ID and list of student numbers for the group
+\def\projectTitle{Title}
+\def\groupNumber{G070}
+\def\studentNumbers{s0905577, s2202101, s1738286}
+
+\begin{document} 
+
+\twocolumn[
+\mlptitle{\projectTitle: Interim Report}
+
+\centerline{\groupNumber\ (\studentNumbers)}
+
+\vskip 7mm
+]
+
+\begin{abstract} 
+%The abstract should be a few sentences (100--200 words) long,  providing a concise summary of the contents of your report including the key research question(s) addressed, the methods explored, the data used, and the findings of the experiments.
+Accurate image classification is one of the most cutting edge technologies in machine learning, its importance it is validated but its heavy use in medical imaging, object identification in satellite images, traffic control systems etc, and every day we discover new ways of implementing it other industries.
+This project implements the use of attention learning combined with multi-label classification as an accurate way to categorise images from the NUS dataset, and observes the challenges that arise from connecting the 2 methodologies.
+\end{abstract} 
+
+\section{Introduction}
+\label{sec:intro}
+%This document provides a template for the MLP coursework 3 interim report.  This template structures the report into sections, which you may use,or you can structure it differently if you wish.  If you want to use subsections within a section that is fine. In this template the text in each section will include a very brief outline of what you should include in each section, along with some practical LaTeX examples (for example figures, tables, algorithms).  Your document should be no longer than \textbf{five pages},  with an additional page (or more!) allowed for references.
+
+%You should give a broad introduction to the project, including citations to related work. Your aim here is to explain why the project is addressing an interesting topic, and how it relates to things that have been done in the area.
+
+%You should make clear what are the aims and objectives of the project, what are the research questions being addressed.  Be precise. In this section you should make clear what the project's contribution is: how is it different to what is already done. 
+
+%The interim report should state the objectives of the project, which are related to the research questions. What experiments do you plan to carry out? You can differentiate between core objectives, and optional objectives you hope to achieve if things go well. The conclusions in your final report should relate to these objectives.
+
+%Use bibtex to organise your references -- in this case the references are in the file \verb+example-refs.bib+.  Here is a an example reference \citep{langley00}.  
+
+\subsection{Motivation}
+With the development of information technology, more and more digital images are available on the internet. Users often use various tags to describe the contents of their photographs when they share them. Accurate categorisation of these images and tags can better portray community images, facilitate the growth of user groups, increase commercial interest and benefit media research \cite{chua2009nus}.
+
+\subsection{Previous Literature Review}
+The NUS dataset has been previously used to address various different research questions. Chua et al. have addressed the possiblity of learning effective models from sufficiently large image datasets to facilitate general image retrieval, using the traditional k-NN algorithm \cite{10.1145/1646396.1646452}. The NUS dataset has also received a lot of attention from the medical community. Candes et al. have formulated a new NUS theorem, which states that for most of the practical cases, a significantly smaller number of data points in comparison to the size the full Nyquist grid is sufficient for obtaining the exact reconstruction of the spectrum \cite{1580791}. The theorem evoked the rapidly growing group of signal processing methods, referred to as the compressed sensing (CS) or compressive sampling. A number of CS applications has been recently demonstrated in various fields of science and technology, including the striking results obtained for fast magnetic resonance imaging (MRI). And later, Kazimierczuk and Orekhov have demonstrated CS as an effective tool for obtaining high-quality spectra from the NUS data and present the first experimental examples of compressed sensing in Nuclear Magnetic Resonance spectroscopy (CS-NMR) \cite{https://doi.org/10.1002/anie.201100370}.
+
+\subsection{Research Questions and Project Objectives}
+There is often more than one feature information in an image and it is vital to be able to extract them accurately and comprehensively. We try to use the attention model as a baseline model and improve it to better accomplish multitasks and make predictions for multiple concepts of each image.
+
+
+\section{Data set and task} 
+%Clearly describe the data set and task you will be exploring.  If the data requires any preprocessing, then explain this.  The description should be in enough detail such that your work would be reproducible by another group.  Describe how you will evaluate the task (for example, classification accuracy).  Use citations where appropriate.
+
+%hacky way to force this figure to be on the next page
+\begin{figure*} [htp]
+    \centering
+    \includegraphics[width=1\textwidth]{attention_uml_v1.jpeg}
+    \caption{Attention UML Diagram}
+    \label{fig:attention UML diagram}
+\end{figure*}
+
+This project explores the dataset from the Lab for Media Search of the National University of Singapore \cite{nus-url}. This dataset is much larger than the popularly available Corel \cite{corel-url} and Caltech 101 \cite{caltech-url} datasets. This dataset contains:
+\begin{itemize}
+\item[*] 269,648 images collected from Flickr, each image is around 24k in size;
+\item[*] 81 concepts of groundtruth for evaluation and their corresponding label files;
+\item[*] 64-D colour histogram, 144-D colour correlogram, 73-D edge direction histogram, 128-D wavelet texture, 225-D block-wise colour moments, and 500-D bag of words based on SIFT descriptions are six types of low-level features retrieved from these images.
+\end{itemize}
+
+The classification is multitasking, which means for each image, there is more than one label. We checked the number of images corresponding to each labels in the training set. The most is sky with 36,517; the least is map with only 33. The largest number of labels in training set are listed as in Figure \ref{Data distribution}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{table1_data_distribution.PNG}
+    \caption{Data distribution table}
+    \label{Data distribution}
+\end{figure}
+
+In addition we generated a matrix of $81*81$ to examine the relevance of the labels, as shown in Appendix \ref{labels-matrix}. 
+
+\section{Methodology}
+%Explain clearly the technical methodology, the models and algorithms that are used.  Approaches that were covered in the lectures can be described briefly, but if you are using modifications to such approaches make sure these are clearly described.    Again use citations to the literature.
+
+%If you present algorithms, you can use the \verb+algorithm+ and \verb+algorithmic+ environments to format pseudocode (for instance, Algorithm~\ref{alg:example}). These require the corresponding style files, \verb+algorithm.sty+ and \verb+algorithmic.sty+ which are supplied with this package. 
+
+%\begin{algorithm}[ht]
+%\begin{algorithmic}
+%   \STATE {\bfseries Input:} data $x_i$, size $m$
+%   \REPEAT
+%   \STATE Initialize $noChange = true$.
+%   \FOR{$i=1$ {\bfseries to} $m-1$}
+%   \IF{$x_i > x_{i+1}$} 
+%   \STATE Swap $x_i$ and $x_{i+1}$
+%   \STATE $noChange = false$
+%   \ENDIF
+%   \ENDFOR
+%   \UNTIL{$noChange$ is $true$}
+%\end{algorithmic}
+%  \caption{Bubble Sort}
+%  \label{alg:example}
+%\end{algorithm}
+
+\subsection{Model Overview}
+The model combines the research into image captioning completed in the Show, Attend and Tell paper with standard strategies for multi-label classification \cite{xu2016show}. The model first passes the 3 dimensional RGB channel through a convolutional block with an RELU activation. To support identification of the rotation invariant features max pooling is used to identify the most prominent image patches. From here a basic block is utilized for more feature segmentation which consists of 2 convolutional layers, activated by RELU functions. 
+\newline
+\newline
+Following this initial feature extraction the data is passed through an attention layer. The key features of the data are identified by passing a further convolutions block through a maxpooling. This is then activated by a Softmax function to identify the relationship, or dependencies between the image features \cite{wang2017residual}. In parallel to this attention mechanism the data is fed through 2 convolutions blocks with the output of the attention layer being: $(1 + SMAX(X))*CONV(X)$. The output of this attention block is a vector that has captured both the principal features of an image and the relationship between the features. 
+\newline
+\newline
+The attention block is fed through a residual block where the convolution space is reduced from 64 to 32 channels. The residual layer helps to reduce the likelihood of vanishing gradient and ensure important information is propagated through to the final activation layer. As the model (as it stands) is 32 layers strategies to reduce the likelihood of vanishing/exploding gradient are appropriate. The reduction of feature layers is completed to capture non-linear relationships between the features and the labels. The final steps are creating a flat, 27 dimensional vector that is activated using the Sigmoid function. Sigmoid is chosen as an activation function because we're trying to capture the independent probability of each independent label, so is an appropriate activation function for binary-cross entropy which is used to determine the efficacy of the model.
+\newline
+\newline
+Figure \ref{fig:attention UML diagram} contains a diagram of the model, and a full summary is included in Appendix \ref{labels-matrix}
+\newline
+
+\begin{figure*} [htp]
+    \centering
+    \includegraphics[width=1\textwidth]{model_summary.png}
+    \caption{Model Summary}
+    \label{fig:model summary}
+\end{figure*}
+
+
+\section{Experiments}
+\label{sec:expts}
+%The interim report should include some experimental results.  In most cases these will be baseline experiments.  Baseline experiments refer to experiments conducted using well-understood approaches against which you can compare later results.  For example if you were exploring a new data set, the baselines might include linear networks and deep neural networks with different numbers of hidden layers;  if you were exploring a different approach to regularisation, then the baselines would include no regularisation, and conventional techniques such as L1, L2, and dropout.  You can include the results of any further experiments in your interim report.
+
+%Present the experimental results clearly and concisely.  Usually a result is in comparison or contrast to a result from another approach please make sure that these comparisons/contrasts are clearly presented.  You can facilitate comparisons either using graphs with multiple curves or (if appropriate, e.g. for accuracies) a results table. You need to avoid having too many figures, poorly labelled graphs, and graphs which should be comparable but which use different axis scales. A good presentation will enable the reader to compare trends in the same graph -- each graph should summarise the results relating to a particular research (sub)question.
+
+%There is no need to include code or specific details about the compute environment.
+
+%As before, your experimental sections should include graphs (for instance, figure~\ref{fig:sample-graph}) and/or tables (for instance, table~\ref{tab:sample-table})\footnote{These examples were taken from the ICML template paper.}, using the \verb+figure+ and \verb+table+ environments, in which you use \verb+\includegraphics+ to include an image (pdf, png, or jpg formats).  Please export graphs as 
+%\href{https://en.wikipedia.org/wiki/Vector_graphics}{vector graphics}
+%rather than \href{https://en.wikipedia.org/wiki/Raster_graphics}{raster
+%files} as this will make sure all detail in the plot is visible.
+%Matplotlib supports saving high quality figures in a wide range of
+%common image formats using the
+%\href{http://matplotlib.org/api/pyplot_api.html\#matplotlib.pyplot.savefig}{\texttt{savefig}}
+%function. \textbf{You should use \texttt{savefig} rather than copying
+%the screen-resolution raster images outputted in the notebook.} An
+%example of using \texttt{savefig} to save a figure as a PDF file (which
+%can be included as graphics in a \LaTeX document is given in the coursework document.
+
+%If you need a figure or table to stretch across two columns use the \verb+figure*+ or \verb+table*+ environment instead of the \verb+figure+ or \verb+table+ environment.  Use the \verb+subfigure+ environment if you want to include multiple graphics in a single figure.
+
+%\begin{figure}[tb]
+%\vskip 5mm
+%\begin{center}
+%\centerline{\includegraphics[width=\columnwidth]{icml_numpapers}}
+%\caption{Historical locations and number of accepted papers for International
+%  Machine Learning Conferences (ICML 1993 -- ICML 2008) and
+%  International Workshops on Machine Learning (ML 1988 -- ML
+%  1992). At the time this figure was produced, the number of
+%  accepted papers for ICML 2008 was unknown and instead estimated.}
+%\label{fig:sample-graph}
+%\end{center}
+%\vskip -5mm
+%\end{figure} 
+
+%\begin{table}[tb]
+%\vskip 3mm
+%\begin{center}
+%\begin{small}
+%\begin{sc}
+%\begin{tabular}{lcccr}
+%\hline
+%\abovespace\belowspace
+%Data set & Naive & Flexible & Better? \\
+%\hline
+%\abovespace
+%Breast    & 95.9$\pm$ 0.2& 96.7$\pm$ 0.2& $\surd$ \\
+%Cleveland & 83.3$\pm$ 0.6& 80.0$\pm$ 0.6& $\times$\\
+%Glass2    & 61.9$\pm$ 1.4& 83.8$\pm$ 0.7& $\surd$ \\
+%Credit    & 74.8$\pm$ 0.5& 78.3$\pm$ 0.6&         \\
+%Horse     & 73.3$\pm$ 0.9& 69.7$\pm$ 1.0& $\times$\\
+%Meta      & 67.1$\pm$ 0.6& 76.5$\pm$ 0.5& $\surd$ \\
+%Pima      & 75.1$\pm$ 0.6& 73.9$\pm$ 0.5&         \\
+%\belowspace
+%Vehicle   & 44.9$\pm$ 0.6& 61.5$\pm$ 0.4& $\surd$ \\
+%\hline
+%\end{tabular}
+%\end{sc}
+%\end{small}
+%\caption{Classification accuracies for naive Bayes and flexible 
+%Bayes on various data sets.}
+%\label{tab:sample-table}
+%\end{center}
+%\vskip -3mm
+%\end{table}
+
+The model was trained (initially) on a small subset of the training data. The training dataset was iterated over 35 times with back-propagation ran to support identification of model parameters to minimize the associated error with each label. 
+\newline
+\newline
+The mean precision, error, F1 and binary cross-entropy are plotted in the figures below. The divergence in performance between the training and test dataset is typical of overfitting, where the model identifies parameters that reflect biases in the training dataset that do not extend to the overall population. 
+
+\newline
+\newline
+The mean error, accuracy (both in terms of precision and recall) are plotted in the figures below. The fast convergence demonstrate that the attention model, as it stands, has a high propensity to overfit the data (no evaluation has been completed of the test dataset as of yet). To address this strategies to reduce over-fitting such as dropout and regularization will be implemented to support generalization to the test dataset. As part of improving the performance of the model we will also look at data augmentation and under what combination of labels the model performs well to develop a data augmentation strategy to address data imbalance and distribution issues. Finally, we will compare running the model with and without the attention model to explore what role it's playing in the model performance and look at visualizing the components/features identified by the attention module to see if it's aligned with the capabilities identified in the show, attend and tell paper. 
+
+\begin{figure} [ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{results_small_v1_part1.png}
+    \caption{BCE and recall score results}
+    \label{fig:results1}
+\end{figure}
+\begin{figure} [ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{results_small_v1_part2.png}
+    \caption{Precision score and F1 score results}
+    \label{fig:results2}
+\end{figure}
+
+
+\section{Interim conclusions}
+\label{sec:concl}
+%What have you learned so far?  Do the experiments indicate that the project is feasible?  Do the experiments indicate that you should consider changes to your original plan?  Can you compare your results so far to what has been reported in the literature?
+
+We used the attention model to train the NUS dataset, which contains the network images and their corresponding 81 labels in total. The difficulty in this problem lies in multitasking, e.g. an image corresponding to both the label sky cloud etc. We have currently used a small part of the dataset and have experienced overfitting. In the next step, we will expand the use of the dataset and add algorithms such as dropout to solve the overfitting. In addition, we will further investigate the issue of label correlation in the dataset to develop a better way to fit the dataset.
+
+
+\section{Plan}
+We would adopt the recurrent attention CNN approach\cite{fu2017look}, i.e. introduce an attention mechanism in machine learning to improve the accuracy of multi-tasking in network learning by recursively analysing local information and thus extracting the necessary features.
+\label{sec:plan}
+%Based on what you have done so far, present a plan for the rest of the project.  Are there any changes to the objectives?  What are the risks?  Do you need a backup plan?
+
+%%• Plan for the remainder of the project, including discussion of risks, backup plans
+
+
+\bibliography{example-refs}
+ 
+
+%%\usepackage{appendix}
+
+\begin{appendix}
+\input{appendix table}
+\end{appendix}
+
+%\subsection{Data Distribution}
+%%\label{appendix:data distribution}
+%%\begin{figure*} [H]
+%%    \centering
+%%    \includegraphics[width=1\textwidth]{table1_data_distribution.PNG}
+%%    \caption{Table 1 : Data distribution large}
+ %%   \label{Table 1 : Data distribution large}
+%%\end{figure*}
+%\includegraphics[scale=0.7]{table1_data_distribution.PNG}
+
+%%
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+% \usepackage{lscape}
+
+
+
+\end{document}

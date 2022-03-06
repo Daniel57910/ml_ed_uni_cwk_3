@@ -1,0 +1,41 @@
+\documentclass[8pt]{article}
+\usepackage{lingmacros}
+\usepackage{tree-dvips}
+\usepackage{graphicx}
+\usepackage{subfiles}
+\usepackage{amsmath}
+\usepackage{subfiles}
+\usepackage{algpseudocode}
+\usepackage{subfig}
+\usepackage{booktabs}
+\usepackage{fontsize}
+\usepackage{geometry}
+\usepackage{natbib}
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+}
+
+\changefontsize[11pt]{11pt}
+\begin{document}
+Attention-based learning was first introduced by Xu Et Al for the purpose of image caption generation\cite{xu2016show}. They developed hard-attention modules which focused on the expected value of specific captions and soft attention modules which encoded different levels of information in encoder-decoder architectures. When captions were idenfified, both attention mechanism allowed for different pixel regions to be brought to the fore. As multi-label classification involves assigning global labels based on different pixel configuration extending attention to image classification is logical.
+\newline
+\newline
+With respect to image classification Wang Et Al (at the time) demonstrated that attention modules could be embedded into very deep neural networks to achieve state of the art performance on CIFAR-10, CIFAR-100 and ImageNet LSVRC 2012 \cite{wang2017residual}. Rather than encoding attention in context vectors, they defined attention layers as feature masks. The feature masks are built up from image convolutions which are used to capture regions of an image that are relevant to both foreground and background features.
+\newline
+\newline
+Bello et Al departed from the use of feature masks and standard convolutions because of their focus on specific pixel neighbourhoods \cite{bello2020attention}. They defined attention as an augmented convolutional layer with learnable parameters. They proposed a multi-headed approach to attention, where multiple linear transformations are concatenated into one context vector that captures the various regions of an image. This approach is more aligned with the encoder-decoder architectures initially suggested by Xu Et Al, and popularized by Vaswani et al in 2017 \cite{vaswani2017attention}.
+\newline
+\newline
+Despite there being constant research into attention modules, most of the research has focused on single-label classification. In 2015, Ba Et Al combined convolutions with recurrent models to capture a "glimpse", or image feature \cite{ba2015multiple}. The glimpses are then forward propagated so the final layer classification layer contains all the previously learned information. This approach was successfully tested for constrained multi-label tasks such as house number identification that don't require the context specific feature extraction explored by Bello and Vaswani.
+\newline
+\newline
+Applying attention modules to more complicated object detection was recently completed by Wei Et Al \cite{WeiObjDet2021}. They propose an adaptive attention mechanism where max pools are used to identify small, region specific objects and average pools are used to identify less region specific/background objects. The weighting of these pooled units is learnt during training and is thus data specific.
+\newline
+\newline
+It's also worth mentioning some of the concerns and proposed limitations of attention networks on their own. The state of the art for NUS utilizes a version of multi-headed attention to identify features that are correlated or related \cite{liu2021query2label}. This is then fed into a transformer architecture where the relationship between features and labels are encoded and utilized for binary classification. Exploring transformer architectures is outside the scope of this report but incorporating attention modules into transformers seems to support the development of generalizable multi-image classifiers.
+\bibliographystyle{plain}
+\bibliography{./refs.bib}
+\end{document}
