@@ -1,9 +1,9 @@
 #!/bin/sh
-#SBATCH -N 1	  # nodes requested
-#SBATCH -n 1	  # tasks requested
+#SBATCH -N 4	  # nodes requested
+#SBATCH -n 4	  # tasks requested
 #SBATCH --gres=gpu:1
 #SBATCH --mem=10000  # memory in Mb
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 #SBATCH --partition=Teach-Standard
 #SBATCH --mail-user=s0905577
 #SBATCH --mail-type=ALL
