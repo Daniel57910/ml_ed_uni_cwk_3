@@ -74,7 +74,7 @@ def load_data(train_path, test_path):
     return train_dataloader, test_dataloader
 
 LEARNING_RATE = WEIGHT_DECAY = 1e-4
-MAX_EPOCH_NUMBER = 2
+MAX_EPOCH_NUMBER = 70
 NUM_CLASSES = 81
 # BATCH_SIZE=110
 BATCH_SIZE=30
