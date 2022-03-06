@@ -108,14 +108,16 @@ def main():
         model = BaseModel(
            NUM_CLASSES
         )
+        find_params = True
     if model_name == "resnet_18":
         model = get_resnet_18(NUM_CLASSES)
+        find_params = False
 
     model.to(device)
 
     model = DDP(
         model,
-        find_unused_parameters=True
+        find_unused_parameters=find_params
     )
 
     print(f"Attaching model to device: {device}")
