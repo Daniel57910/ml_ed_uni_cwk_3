@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --mem=10000  # memory in Mb
 #SBATCH --cpus-per-task=4
-#SBATCH --partition=Teach-LongJobs
+#SBATCH --partition=Teach-Standard
 #SBATCH --mail-user=s0905577
 #SBATCH --mail-type=ALL
 
@@ -34,4 +34,4 @@ mkdir -p ${TMP}/datasets/
 export DATASET_DIR=${TMP}/datasets/
 # Activate the relevant virtual environment:
 
-source ~/.bashrc && conda activate mlp3 && torchrun cswk_3/code/train_model.py
+source ~/.bashrc && conda activate mlp3 && torchrun cswk_3/code/train_model.py -m resnet_18 -f resnet_18
