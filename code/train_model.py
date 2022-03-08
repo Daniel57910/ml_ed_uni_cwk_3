@@ -1,4 +1,5 @@
-from code.attention_model_v2 import AttModelV2
+from attention_model_v2 import AttModelV2
+from attention_model_v1 import AttModelV1
 from resnet_models import get_resnet_18
 from dataset import NusDataset
 import os
@@ -8,7 +9,6 @@ import numpy as np
 import random
 import torch
 from torch.utils.data import DataLoader
-from attention_model_v1 import AttModelV1
 import torch.nn as nn
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, hamming_loss
 from datetime import datetime
