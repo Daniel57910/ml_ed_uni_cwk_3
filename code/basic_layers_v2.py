@@ -11,7 +11,7 @@ def make_convolution_layer(
     channel_output,
     kernel=3,
     pool_type=None,
-    dropout_rate=0.5):
+    dropout_rate=0.4):
     core_layer = [
         nn.Conv2d(channel_input, channel_output, kernel),
         nn.BatchNorm2d(channel_output),
@@ -25,65 +25,38 @@ def make_convolution_layer(
         pool_layer  = nn.MaxPool2d(kernel_size=3, stride=2)
         core_layer += [pool_layer, nn.Dropout(p=dropout_rate)]
 
-
     return nn.Sequential(*core_layer)
 
 
+class ResidualBlock(nn.Module):
 
-    def __init__(self, channel_input, channel_output=None, dropout_rate=0.5):
+    def __init__(self, channel_input, channel_output=None, dropout_rate=0.4):
 
         if not channel_output:
             channel_output = channel_input
 
-        super(BasicBlock, self).__init__()
-        self.conv_block1 = nn.Sequential(
-            nn.Conv2d(channel_input, channel_output, 3, padding=1),
-            nn.BatchNorm2d(channel_output),
-            nn.ReLU(),
-            nn.Dropout(p=0.4)
-        )
-        self.conv_block2 = nn.Sequential(
-            nn.Conv2d(channel_output, channel_output, 3, padding=1),
-            nn.BatchNorm2d(channel_output),
-            nn.ReLU(),
-            nn.Dropout(p=0.4)
-        )
-
+        super(ResidualBlock, self).__init__()
+        self.conv_block1 = make_convolution_layer(channel_input, channel_output)
+        self.conv_block2 = make_convolution_layer(channel_output, channel_output)
+        self.conv_block3 = make_convolution_layer(channel_output, channel_output)
         if channel_output:
-            self.residual_block = nn.Sequential(
-                nn.Conv2d(channel_input, channel_output, 3, padding=1),
-                nn.BatchNorm2d(channel_output),
-                nn.Dropout(p=0.3)
+            self.conv_upsample = nn.Sequential(
+                nn.Conv2d(
+                    channel_input,
+                    channel_output,
+                    kernel_size=3,
+                    bias=False),
+                nn.UpsamplingNearest2d(
+                    size=(82, 82)
+                )
             )
+
 
     def forward(self, x):
         residual = x
-        out = self.conv_block1(x)
-        out = self.conv_block2(out)
-        if out.shape != residual.shape:
-            residual = self.residual_block(residual)
-            out = out + residual
-        return out
-
-
-class AttentionBasicBlock(nn.Module):
-    def __init__(self, channel_num) -> None:
-        super(AttentionBasicBlock, self).__init__()
-        self.residual_one = BasicBlock(64)
-        self.trunk = nn.Sequential(
-            BasicBlock(64),
-            BasicBlock(64)
-        )
-
-        self.softmax = nn.Softmax(dim=0)
-        self.upsample = nn.UpsamplingBilinear2d(size=(89, 89))
-
-    def forward(self, x):
-        out = self.residual_one(x)
-        trunk = self.trunk(x)
-        out_pool = nn.MaxPool2d(kernel_size=3, stride=2)(out)
-        softmax = self.softmax(out_pool)
-        softmax = nn.Dropout(p=0.3)(softmax)
-        upsample = self.upsample(softmax)
-        trunk_combine = (1 + upsample) * trunk
-        return trunk_combine
+        out_c1 = self.conv_block1(x)
+        out_c2 = self.conv_block2(out_c1)
+        out_c3 = self.conv_block3(out_c2)
+        if residual.shape != out_c3.shape:
+            residual = self.conv_upsample(residual)
+        return out_c3 + residual

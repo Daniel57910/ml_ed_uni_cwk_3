@@ -1,3 +1,4 @@
+from code.attention_model_v2 import AttModelV2
 from resnet_models import get_resnet_18
 from dataset import NusDataset
 import os
@@ -7,7 +8,7 @@ import numpy as np
 import random
 import torch
 from torch.utils.data import DataLoader
-from attention_model import BaseModel
+from attention_model_v1 import AttModelV1
 import torch.nn as nn
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, hamming_loss
 from datetime import datetime
@@ -83,8 +84,8 @@ META_PATH = 'nus_wide'
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_name", "-m", help="name of model", default="att_v1")
-    parser.add_argument("--f_name", "-f", help="name of output file name", default="att_v1")
+    parser.add_argument("--model_name", "-m", help="name of model", default="att_v2")
+    parser.add_argument("--f_name", "-f", help="name of output file name", default="att_v2")
     args = parser.parse_args()
     return args.model_name, args.f_name
 
@@ -105,10 +106,15 @@ def main():
     print(f"Model to use {model_name}, csv output file {f_name}")
 
     if model_name == "att_v1":
-        model = BaseModel(
+        model = AttModelV1(
            NUM_CLASSES
         )
         find_params = True
+
+    if model_name == "att_v2":
+        model = AttModelV2(
+            NUM_CLASSES
+        )
     if model_name == "resnet_18":
         model = get_resnet_18(NUM_CLASSES)
         find_params = False
@@ -120,7 +126,7 @@ def main():
         find_unused_parameters=find_params
     )
 
-    print(f"Attaching model to device: {device}")
+    print(f"Attaching model {model_name} to device: {device}")
     print(f"Device count: {torch.cuda.device_count()}")
 
     criterion = nn.BCEWithLogitsLoss()
@@ -136,7 +142,7 @@ def main():
     train_dataloader, test_dataloader = load_data('train.json', 'test.json')
     batch_losses = []
     batch_losses_test = []
-    for i in range(0, MAX_EPOCH_NUMBER):
+    for i in range(0, 1):
         print(f"Training model at epoch {i}")
         model.train()
         with tqdm(train_dataloader, unit="batch") as train_epoch:
@@ -146,6 +152,7 @@ def main():
                 optimizer.zero_grad()
                 with autocast():
                     model_result = model(imgs)
+                    break
                     loss = criterion(model_result, targets)
                 batch_loss_value = loss.item()
                 scaler.scale(loss).backward()
@@ -161,7 +168,7 @@ def main():
                 result['losses'] = batch_loss_value
                 batch_losses.append(result)
                 train_epoch.set_postfix(train_loss=batch_loss_value, train_acc=result['accuracy'])
-
+        break
         with tqdm(test_dataloader, unit="batch") as test_epoch:
             print(f"Running validation at epoch {i}")
             test_epoch.set_description(f"Epoch: {i}")
@@ -184,19 +191,19 @@ def main():
                     batch_losses_test.append(val_metrics)
                     test_epoch.set_postfix(test_loss=batch_loss_test, test_acc=val_metrics['accuracy'])
 
-    time_in_hours = datetime.now().strftime("%Y_%m_%d_%H")
-    time_in_minutes = datetime.now().strftime("%H_%M")
-    df = pd.DataFrame(batch_losses)
-    df_val = pd.DataFrame(batch_losses_test)
+    # time_in_hours = datetime.now().strftime("%Y_%m_%d_%H")
+    # time_in_minutes = datetime.now().strftime("%H_%M")
+    # df = pd.DataFrame(batch_losses)
+    # df_val = pd.DataFrame(batch_losses_test)
 
-    results_directory = f"results_{time_in_hours}"
+    # results_directory = f"results_{time_in_hours}"
 
-    if not os.path.exists(results_directory):
-        os.makedirs(results_directory)
+    # if not os.path.exists(results_directory):
+    #     os.makedirs(results_directory)
 
-    print(f"Saving results to {results_directory}")
-    df.to_csv(f"{results_directory}/{f_name}_training_{time_in_minutes}.csv")
-    df_val.to_csv(f"{results_directory}/{f_name}_validation_{time_in_minutes}.csv")
+    # print(f"Saving results to {results_directory}")
+    # df.to_csv(f"{results_directory}/{f_name}_training_{time_in_minutes}.csv")
+    # df_val.to_csv(f"{results_directory}/{f_name}_validation_{time_in_minutes}.csv")
 
 if __name__ == "__main__":
     main()
