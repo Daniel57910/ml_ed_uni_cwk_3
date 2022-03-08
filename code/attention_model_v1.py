@@ -8,7 +8,7 @@ import torch.nn.functional as F
 # from torchsummary import summary
 import pdb
 
-class BaseModel(nn.Module):
+class AttModelV1(nn.Module):
     def __init__(self, n_classes) -> None:
         super().__init__()
         self.conv_1 = self._make_layer(3, 64, 3)

@@ -1,0 +1,1 @@
+scp -r s0905577@ssh.inf.ed.ac.uk:/afs/inf.ed.ac.uk/user/s09/s0905577/${1} .
