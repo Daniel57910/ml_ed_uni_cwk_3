@@ -2,7 +2,7 @@ from sys import path_hooks
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from basic_layers import BasicBlock, AttentionBasicBlock
+from basic_layers_v1 import BasicBlock, AttentionBasicBlock
 from torchvision import models
 import torch.nn.functional as F
 # from torchsummary import summary

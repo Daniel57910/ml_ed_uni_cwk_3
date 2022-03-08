@@ -115,6 +115,7 @@ def main():
         model = AttModelV2(
             NUM_CLASSES
         )
+        find_params = True
     if model_name == "resnet_18":
         model = get_resnet_18(NUM_CLASSES)
         find_params = False
