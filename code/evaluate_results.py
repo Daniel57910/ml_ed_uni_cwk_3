@@ -1,12 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-RESULTS_FILES_DIR = 'results_2022_03_06_23'
+RESULTS_FILES_DIR = 'results_2022_03_09_09'
 
 
 
 df_train, df_val = (
-    pd.read_csv(RESULTS_FILES_DIR + "/resnet_18_training_23_45.csv"),
-    pd.read_csv(RESULTS_FILES_DIR + "/resnet_18_validation_23_45.csv"),
+    pd.read_csv(RESULTS_FILES_DIR + "/att_v2_training_09_14.csv"),
+    pd.read_csv(RESULTS_FILES_DIR + "/att_v2_validation_09_14.csv"),
 )
 
 df_train, df_val = (

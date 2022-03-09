@@ -77,8 +77,8 @@ def load_data(train_path, test_path):
 LEARNING_RATE = WEIGHT_DECAY = 1e-4
 MAX_EPOCH_NUMBER = 70
 NUM_CLASSES = 81
-# BATCH_SIZE=110
-BATCH_SIZE=30
+BATCH_SIZE=110
+# BATCH_SIZE=30
 IMAGE_PATH = 'images'
 META_PATH = 'nus_wide'
 
@@ -94,6 +94,7 @@ def main():
     # torch.cuda._lazy_init()
     torch.backends.cudnn.benchmark = True
     torch.backends.cudnn.deterministic = True
+    torch.autograd.set_detect_anomaly(True)
     torch.manual_seed(2020)
     torch.cuda.manual_seed(2020)
     np.random.seed(2020)
@@ -115,7 +116,7 @@ def main():
         model = AttModelV2(
             NUM_CLASSES
         )
-        find_params = True
+        find_params = False
     if model_name == "resnet_18":
         model = get_resnet_18(NUM_CLASSES)
         find_params = False
@@ -143,8 +144,7 @@ def main():
     train_dataloader, test_dataloader = load_data('train.json', 'test.json')
     batch_losses = []
     batch_losses_test = []
-    for i in range(0, 1):
-        print(f"Training model at epoch {i}")
+    for i in range(0, MAX_EPOCH_NUMBER):
         model.train()
         with tqdm(train_dataloader, unit="batch") as train_epoch:
             train_epoch.set_description(f"Epoch: {i}")
@@ -153,7 +153,6 @@ def main():
                 optimizer.zero_grad()
                 with autocast():
                     model_result = model(imgs)
-                    break
                     loss = criterion(model_result, targets)
                 batch_loss_value = loss.item()
                 scaler.scale(loss).backward()
@@ -169,9 +168,8 @@ def main():
                 result['losses'] = batch_loss_value
                 batch_losses.append(result)
                 train_epoch.set_postfix(train_loss=batch_loss_value, train_acc=result['accuracy'])
-        break
+
         with tqdm(test_dataloader, unit="batch") as test_epoch:
-            print(f"Running validation at epoch {i}")
             test_epoch.set_description(f"Epoch: {i}")
             with torch.no_grad():
                 model.eval()
@@ -192,19 +190,19 @@ def main():
                     batch_losses_test.append(val_metrics)
                     test_epoch.set_postfix(test_loss=batch_loss_test, test_acc=val_metrics['accuracy'])
 
-    # time_in_hours = datetime.now().strftime("%Y_%m_%d_%H")
-    # time_in_minutes = datetime.now().strftime("%H_%M")
-    # df = pd.DataFrame(batch_losses)
-    # df_val = pd.DataFrame(batch_losses_test)
+    time_in_hours = datetime.now().strftime("%Y_%m_%d_%H")
+    time_in_minutes = datetime.now().strftime("%H_%M")
+    df = pd.DataFrame(batch_losses)
+    df_val = pd.DataFrame(batch_losses_test)
 
-    # results_directory = f"results_{time_in_hours}"
+    results_directory = f"results_{time_in_hours}"
 
-    # if not os.path.exists(results_directory):
-    #     os.makedirs(results_directory)
+    if not os.path.exists(results_directory):
+        os.makedirs(results_directory)
 
-    # print(f"Saving results to {results_directory}")
-    # df.to_csv(f"{results_directory}/{f_name}_training_{time_in_minutes}.csv")
-    # df_val.to_csv(f"{results_directory}/{f_name}_validation_{time_in_minutes}.csv")
+    print(f"Saving results to {results_directory}")
+    df.to_csv(f"{results_directory}/{f_name}_training_{time_in_minutes}.csv")
+    df_val.to_csv(f"{results_directory}/{f_name}_validation_{time_in_minutes}.csv")
 
 if __name__ == "__main__":
     main()
