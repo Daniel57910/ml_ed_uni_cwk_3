@@ -102,8 +102,6 @@ class AttentionBlock1(nn.Module):
         attention_block = self.attention_downsample(attention_block)
 
         combination_block = (1 + attention_block) * trunk
-        print(combination_block.shape)
-        print(skip_conn.shape)
         combination_block = combination_block + skip_conn
         out = self.out_block(combination_block)
         return out
