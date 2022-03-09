@@ -93,13 +93,17 @@ class AttentionBlock1(nn.Module):
         residual_one = self.residual_one(x)
         trunk = self.trunk(residual_one)
         pool_one = self.mpool(residual_one)
+
         residual_two = self.residual_two(pool_one)
         skip_conn = self.skip_one(residual_two)
         interp_one = self.upsample(residual_two)
+
         attention_block = self.activation_block(interp_one)
-        attention_block = attention_block + skip_conn
         attention_block = self.attention_downsample(attention_block)
+
         combination_block = (1 + attention_block) * trunk
-        combination_block = self.attention_downsample(combination_block)
+        combination_block = combination_block + skip_conn
+
         out = self.out_block(combination_block)
         return out
+
