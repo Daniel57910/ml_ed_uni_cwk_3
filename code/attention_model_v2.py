@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from basic_layers_v2 import make_convolution_layer, ResidualBlock, AttentionBlock1
 from torchvision import models
 import torch.nn.functional as F
-# from torchsummary import summary
+# from torchsmmary import summary
 import pdb
 
 class AttModelV2(nn.Module):
@@ -57,5 +57,3 @@ class AttModelV2(nn.Module):
         return activation
 
 
-# model = AttModelV2(81)
-# print(summary(model, (3, 180, 180)))

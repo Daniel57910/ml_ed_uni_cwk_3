@@ -77,7 +77,7 @@ class AttentionBlock1(nn.Module):
         self.residual_two = ResidualBlock(64, (31, 31))
         self.skip_one = nn.Sequential(
             ResidualBlock(64, (25, 25)),
-            nn.UpsamplingBilinear2d(size=(86, 86))
+            nn.UpsamplingBilinear2d(size=(60, 60))
         )
         self.upsample = nn.UpsamplingBilinear2d(size=(90, 90))
         self.activation_block = nn.Sequential(
@@ -102,8 +102,10 @@ class AttentionBlock1(nn.Module):
         attention_block = self.attention_downsample(attention_block)
 
         combination_block = (1 + attention_block) * trunk
+        print(combination_block.shape)
+        print(skip_conn.shape)
         combination_block = combination_block + skip_conn
-
         out = self.out_block(combination_block)
         return out
+
 
