@@ -83,7 +83,7 @@ class AttentionBlock1(nn.Module):
         self.activation_block = nn.Sequential(
             make_convolution_layer(64, 64),
             make_convolution_layer(64, 64),
-            nn.Sigmoid()
+            nn.Softmax(dim=1)
         )
 
         self.out_block = ResidualBlock(64, (54, 54))

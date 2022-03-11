@@ -4,8 +4,44 @@ import numpy as np
 from PIL import Image
 IMAGE_PATH = 'images'
 META_PATH = 'nus_wide'
-from torchvision import transforms
+from torchvision import transforms, datasets
+from pycocotools.coco import COCO
 import pdb
+import torch
+import torch.utils.data as data
+import os
+import torch
+import torch.utils.data as data
+from PIL import Image
+from pycocotools.coco import COCO
+import numpy as np
+from tqdm import tqdm
+import random
+import json
+
+TOP_20_CLASSES = [
+    "sky",
+    "clouds",
+    "person",
+    "water",
+    "animal",
+    "grass",
+    "buildings",
+    "window",
+    "plants",
+    "lake",
+    "ocean",
+    "road",
+    "flowers",
+    "sunset",
+    "reflection",
+    "rocks",
+    "vehicle",
+    "tree",
+    "snow",
+    "beach"
+]
+
 class NusDataset:
     def __init__(self, data_path, anno_path, transforms):
         self.transforms = transforms
@@ -20,8 +56,10 @@ class NusDataset:
         self.data_path = data_path
         print('loading', anno_path)
         for sample in samples:
-            self.imgs.append(sample['image_name'])
-            self.annos.append(sample['image_labels'])
+                intersection = [l for l in sample['image_labels'] if l in TOP_20_CLASSES]
+                if intersection:
+                    self.imgs.append(sample['image_name'])
+                    self.annos.append(sample['image_labels'])
         for item_id in range(len(self.annos)):
             item = self.annos[item_id]
             vector = [cls in item for cls in self.classes]

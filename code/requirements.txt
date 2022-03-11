@@ -11,3 +11,5 @@ matplotlib
 tensorboard
 scikit-learn
 tqdm
+ml_metrics
+pycocotools
