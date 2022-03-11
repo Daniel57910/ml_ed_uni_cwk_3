@@ -1,4 +1,3 @@
-from tkinter import Y
 from attention_model_v2 import AttModelV2
 from attention_model_v1 import AttModelV1
 from resnet_models import get_resnet_18
@@ -25,7 +24,7 @@ import torch.distributed.autograd as dist_autograd
 from torch.cuda.amp import GradScaler, autocast
 import argparse
 from coco_dataset import DataSet
-import ml_metrics
+# import ml_metrics
 import pdb
 
 
