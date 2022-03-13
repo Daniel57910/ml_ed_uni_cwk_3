@@ -31,14 +31,6 @@ def collate_fn(batch):
     return torch.utils.data.dataloader.default_collate(batch)
 
 
-# def acc_lzw(y_true, y_pred):
-#     a=np.zeros(len(y_pred))
-#     for i in range(len(y_pred)):
-#         a[i] = 1 if y_pred[i] > 0.5 else 0
-#     right = (y_pred == y_true).sum()
-#     return right / len(y_true)
-
-
 def load_coco_dataset(file_path, BATCH_SIZE):
     transform = transforms.Compose([
         transforms.RandomResizedCrop(180, scale=(0.1, 1.5), ratio=(1.0, 1.0)),
