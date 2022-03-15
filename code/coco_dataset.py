@@ -4,10 +4,32 @@ from PIL import Image
 from torchvision.transforms import transforms
 import torch
 import numpy as np
-
+import pdb
 # modify for transformation for vit
 # modfify wider crop-person images
 
+COCO_INDEXES = [
+    0,
+    56,
+    2,
+    60,
+    41,
+    39,
+    45,
+    26,
+    7,
+    24,
+    13,
+    73,
+    67,
+    71,
+    62,
+    57,
+    74,
+    43,
+    58,
+    16
+]
 
 class DataSet(Dataset):
     def __init__(self,
@@ -23,7 +45,7 @@ class DataSet(Dataset):
             [
                 transforms.ToTensor(),
                 transforms.Normalize(mean=[0, 0, 0], std=[1, 1, 1])
-            ] 
+            ]
             # In this paper, we normalize the image data to [0, 1]
             # You can also use the so called 'ImageNet' Normalization method
         )
@@ -38,10 +60,10 @@ class DataSet(Dataset):
                 [
                     transforms.ToTensor(),
                     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-                ] 
-            )        
+                ]
+            )
 
-    def augs_function(self, augs, img_size):            
+    def augs_function(self, augs, img_size):
         t = []
         if 'randomflip' in augs:
             t.append(transforms.RandomHorizontalFlip())
@@ -55,7 +77,7 @@ class DataSet(Dataset):
         t.append(transforms.Resize((img_size, img_size)))
 
         return transforms.Compose(t)
-    
+
     def load_anns(self):
         self.anns = []
         for ann_file in self.ann_files:
@@ -69,30 +91,13 @@ class DataSet(Dataset):
         idx = idx % len(self)
         ann = self.anns[idx]
         img = Image.open(ann["img_path"]).convert("RGB")
+        img = self.augment(img)
+        img = self.transform(img)
 
-        if self.dataset == "wider":
-            x, y, w, h = ann['bbox']
-            img_area = img.crop([x, y, x+w, y+h])
-            img_area = self.augment(img_area)
-            img_area = self.transform(img_area)
-            message = {
-                "img_path": ann['img_path'],
-                "target": torch.Tensor(ann['target']),
-                "img": img_area
-            }
-        else: # voc and coco
-            img = self.augment(img)
-            img = self.transform(img)
-            message = {
-                "img_path": ann["img_path"],
-                "target": torch.Tensor(ann["target"]),
-                "img": img
-            }
+        indexes_true = list(np.where(np.array(ann["target"]) == 1)[0])
+        intersection = list(set(indexes_true) & set(COCO_INDEXES))
+        if intersection:
+            return torch.Tensor(img), torch.tensor(ann["target"])
+        else:
+            return None
 
-        return message
-        # finally, if we use dataloader to get the data, we will get
-        # {
-        #     "img_path": list, # length = batch_size
-        #     "target": Tensor, # shape: batch_size * num_classes
-        #     "img": Tensor, # shape: batch_size * 3 * 224 * 224
-        # }

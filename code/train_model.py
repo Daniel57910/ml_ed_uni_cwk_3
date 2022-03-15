@@ -20,7 +20,7 @@ from torch.utils.data.distributed import DistributedSampler
 from torch.distributed.optim import ZeroRedundancyOptimizer
 from torch import optim
 import torch.distributed.autograd as dist_autograd
-# from mean_average_precision import MetricBuilder
+from mean_average_precision import MetricBuilder
 from torch.cuda.amp import GradScaler, autocast
 import argparse
 from coco_dataset import DataSet
@@ -34,31 +34,41 @@ def collate_fn(batch):
 
 # Use threshold to define predicted labels and invoke sklearn's metrics with different averaging strategies.
 def calculate_metrics(pred, target, num_classes, threshold=0.5):
-    pred = np.array(pred > threshold, dtype=float)
+    pred_bool = np.array(pred > threshold, dtype=float)
+    try:
+        average_precision = average_precision_score(target, pred)
+        print("ERROR IN AP")
+    except:
+        average_precision = 0
+
+    mean_average_precision = MetricBuilder.build_evaluation_metric("map_2d", async_mode=True, num_classes=num_classes)
+    mean_average_precision.add(pred, target)
+    try:
+        map_stats = mean_average_precision.value(iou_thresholds=0.5)
+        print("ERROR IN MAP")
+    except:
+        pdb.set_trace()
+    pdb.set_trace()
     return {
-        'accuracy': accuracy_score(y_true=target, y_pred=pred),
-        'micro/precision': precision_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
-        'micro/recall': recall_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
-        'micro/f1': f1_score(y_true=target, y_pred=pred, average='micro', zero_division=0),
-        'macro/precision': precision_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
-        'macro/recall': recall_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
-        'macro/f1': f1_score(y_true=target, y_pred=pred, average='macro', zero_division=0),
-        "hamming_loss": hamming_loss(y_true=target, y_pred=pred)
+        'accuracy': accuracy_score(y_true=target, y_pred=pred_bool),
+        'average_precision': average_precision,
+        "hamming_loss": hamming_loss(y_true=target, y_pred=pred_bool),
+        "mean_av_precision": map_stats['mAP']
         # "average_precision_map_mlmetrics": ml_metrics.mapk(target, pred)
     }
 
 def load_data_coco():
     train_coco, test_coco = (
         DataSet(
-            ["data/coco/train_coco2014.json"],
+            ["coco_data/coco/train_coco2014.json"],
             [],
-            448,
+            500,
             "coco"
         ),
         DataSet(
-            ["data/coco/val_coco2014.json"],
+            ["coco_data/coco/val_coco2014.json"],
             [],
-            448,
+            500,
             "coco"
         )
     )
@@ -108,22 +118,21 @@ def load_data_nus(train_path, test_path):
 
 LEARNING_RATE = WEIGHT_DECAY = 1e-4
 MAX_EPOCH_NUMBER = 70
-NUM_CLASSES = 81
-BATCH_SIZE=30
+BATCH_SIZE = 90
 IMAGE_PATH = 'nus_images'
 META_PATH = 'nus_wide'
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_name", "-m", help="name of model", default="att_v2")
-    parser.add_argument("--f_name", "-f", help="name of output file name", default="att_v2")
-    parser.add_argument("--d_name", "-d", help="name of dataset", default="nus")
+    parser.add_argument("--model_name", "-m", help="name of model", default="att_v1")
+    parser.add_argument("--d_name", "-d", help="name of dataset", default="nus"),
+    parser.add_argument("--epoch", "-e", help="max epoch", default=20)
     args = parser.parse_args()
-    return args.model_name, args.f_name, args.d_name
+    return args.model_name, args.d_name, int(args.epoch)
 
 def main():
 
-    # torch.cuda._lazy_init()
+    torch.cuda._lazy_init()
     torch.backends.cudnn.benchmark = True
     torch.backends.cudnn.deterministic = True
     torch.autograd.set_detect_anomaly(True)
@@ -134,7 +143,8 @@ def main():
     dist.init_process_group(backend='nccl')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model_name, f_name, d_name = parse_args()
+    model_name, d_name, max_epoch = parse_args()
+    f_name = d_name
     print(f"found device {device}")
 
     if d_name == "coco":
@@ -144,7 +154,7 @@ def main():
     else:
         num_classes = 81
 
-    print(f"Model to use {model_name}, csv output file {f_name}: dataset name: {d_name}: num classes {num_classes}")
+    print(f"Model to use {model_name}, csv output file {f_name}: dataset name: {d_name}: num classes {num_classes}: training {max_epoch}")
 
     if model_name == "att_v1":
         model = AttModelV1(
@@ -190,7 +200,7 @@ def main():
 
     batch_losses = []
     batch_losses_test = []
-    for i in range(0, MAX_EPOCH_NUMBER):
+    for i in range(0, max_epoch):
         model.train()
         with tqdm(train_dataloader, unit="batch") as train_epoch:
             train_epoch.set_description(f"Epoch: {i}")
@@ -199,7 +209,7 @@ def main():
                 optimizer.zero_grad()
                 with autocast():
                     model_result = model(imgs)
-                    loss = criterion(model_result, targets)
+                    loss = criterion(model_result, targets.float())
                 batch_loss_value = loss.item()
                 scaler.scale(loss).backward()
                 scaler.step(optimizer)
@@ -224,7 +234,7 @@ def main():
                     val_imgs, val_targets = val_imgs.to(device), val_targets.to(device)
                     with autocast():
                         val_result = model(val_imgs)
-                        val_losses = criterion(val_result, val_targets)
+                        val_losses = criterion(val_result, val_targets.float())
                     val_metrics = calculate_metrics(
                         val_result.cpu().numpy(),
                         val_targets.cpu().numpy(),

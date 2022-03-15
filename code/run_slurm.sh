@@ -4,7 +4,7 @@
 #SBATCH --mem=12000  # memory in Mb
 #SBATCH --gres=gpu:4
 #SBATCH --cpus-per-task=8
-#SBATCH --partition=Teach-Standard
+#SBATCH --partition=Teach-LongJob
 #SBATCH --mail-user=s0905577
 #SBATCH --mail-type=ALL
 

@@ -1,8 +1,10 @@
 import json
+from operator import itemgetter
 import torchvision.datasets as dset
 from coco_dataset import DataSet
 CORE_PATH = "coco_annotations"
-
+import pdb
+import numpy as np
 def collate_fn(batch):
     batch = list(filter(lambda x: x is not None, batch))
     return torch.utils.data.dataloader.default_collate(batch)
@@ -16,12 +18,3 @@ coco_dataset = DataSet(
     448,
     "coco"
 )
-
-for i, j in enumerate(coco_dataset):
-    if i > 1:
-        break
-    print(j['img'])
-    print(type(j['img']))
-    print(len(j['target']))
-
-

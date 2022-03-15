@@ -7,7 +7,7 @@ import numpy as np
 import pdb
 
 class BasicBlock(nn.Module):
-    def __init__(self, channel_input, channel_output=None, dropout_rate=0.5):
+    def __init__(self, channel_input, channel_output=None):
 
         if not channel_output:
             channel_output = channel_input
@@ -17,20 +17,17 @@ class BasicBlock(nn.Module):
             nn.Conv2d(channel_input, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
             nn.ReLU(),
-            nn.Dropout(p=0.4)
         )
         self.conv_block2 = nn.Sequential(
             nn.Conv2d(channel_output, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
             nn.ReLU(),
-            nn.Dropout(p=0.4)
         )
 
         if channel_output:
             self.residual_block = nn.Sequential(
                 nn.Conv2d(channel_input, channel_output, 3, padding=1),
                 nn.BatchNorm2d(channel_output),
-                nn.Dropout(p=0.3)
             )
 
     def forward(self, x):
@@ -44,16 +41,16 @@ class BasicBlock(nn.Module):
 
 
 class AttentionBasicBlock(nn.Module):
-    def __init__(self, channel_num) -> None:
+    def __init__(self, channel_num, upsample_size) -> None:
         super(AttentionBasicBlock, self).__init__()
-        self.residual_one = BasicBlock(64)
+        self.residual_one = BasicBlock(channel_num)
         self.trunk = nn.Sequential(
-            BasicBlock(64),
-            BasicBlock(64)
+            BasicBlock(channel_num),
+            BasicBlock(channel_num)
         )
 
-        self.softmax = nn.Softmax(dim=0)
-        self.upsample = nn.UpsamplingBilinear2d(size=(89, 89))
+        self.softmax = nn.Sigmoid()
+        self.upsample = nn.UpsamplingBilinear2d(size=(upsample_size, upsample_size))
 
     def forward(self, x):
         out = self.residual_one(x)

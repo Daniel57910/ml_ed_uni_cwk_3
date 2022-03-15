@@ -1,12 +1,25 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-RESULTS_FILES_DIR = 'results_2022_03_09_09'
+import glob
+import os
 
 
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-d', help='results_directory')
+args = parser.parse_args()
+results_directory = args.d
+results_files = os.listdir(results_directory)
+training_csv = next(f for f in results_files if 'training' in f)
+validation_csv = next(f for f in results_files if 'validation' in f)
+df_train_path, df_val_path = os.path.join(results_directory, training_csv), os.path.join(results_directory, validation_csv)
+print(df_train_path, df_val_path)
 
 df_train, df_val = (
-    pd.read_csv(RESULTS_FILES_DIR + "/att_v2_training_09_14.csv"),
-    pd.read_csv(RESULTS_FILES_DIR + "/att_v2_validation_09_14.csv"),
+    pd.read_csv(df_train_path),
+    pd.read_csv(df_val_path),
 )
 
 df_train, df_val = (

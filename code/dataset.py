@@ -69,7 +69,7 @@ class NusDataset:
         anno = self.annos[item]
         img_path = os.path.join(self.data_path, self.imgs[item])
         img = Image.open(img_path).convert("RGB")
-        img = img.resize((180, 180))
+        img = img.resize((500, 500))
         convert_tensor = transforms.ToTensor()
 
         img = convert_tensor(img)
