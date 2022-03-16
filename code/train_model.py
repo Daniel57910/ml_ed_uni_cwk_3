@@ -24,8 +24,48 @@ from mean_average_precision import MetricBuilder
 from torch.cuda.amp import GradScaler, autocast
 import argparse
 from coco_dataset import DataSet
-# import ml_metrics
+import ml_metrics
 import pdb
+import numpy as np
+
+def average_precision(output, target):
+    epsilon = 1e-8
+
+    # sort examples
+    indices = output.argsort()[::-1]
+    # Computes prec@i
+    total_count_ = np.cumsum(np.ones((len(output), 1)))
+
+    target_ = target[indices]
+    ind = target_ == 1
+    pos_count_ = np.cumsum(ind)
+    total = pos_count_[-1]
+    pos_count_[np.logical_not(ind)] = 0
+    pp = pos_count_ / total_count_
+    precision_at_i_ = np.sum(pp)
+    precision_at_i = precision_at_i_ / (total + epsilon)
+
+    return precision_at_i
+
+
+def mAP(targs, preds):
+    """Returns the model's average precision for each class
+    Return:
+        ap (FloatTensor): 1xK tensor, with avg precision for each class k
+    """
+
+    if np.size(preds) == 0:
+        return 0
+    ap = np.zeros((preds.shape[1]))
+    # compute average precision for each class
+    for k in range(preds.shape[1]):
+        # sort scores
+        scores = preds[:, k]
+        targets = targs[:, k]
+        # compute average precision
+        ap[k] = average_precision(scores, targets)
+    return 100 * ap.mean()
+
 
 
 def collate_fn(batch):
@@ -35,26 +75,19 @@ def collate_fn(batch):
 # Use threshold to define predicted labels and invoke sklearn's metrics with different averaging strategies.
 def calculate_metrics(pred, target, num_classes, threshold=0.5):
     pred_bool = np.array(pred > threshold, dtype=float)
-    try:
-        average_precision = average_precision_score(target, pred)
-        print("ERROR IN AP")
-    except:
-        average_precision = 0
-
-    mean_average_precision = MetricBuilder.build_evaluation_metric("map_2d", async_mode=True, num_classes=num_classes)
-    mean_average_precision.add(pred, target)
-    try:
-        map_stats = mean_average_precision.value(iou_thresholds=0.5)
-        print("ERROR IN MAP")
-    except:
-        pdb.set_trace()
-    pdb.set_trace()
+    with np.errstate(divide='ignore', invalid='ignore'):
+        WAP = average_precision_score(target, pred, average='weighted')
+        WAP = 0 if np.isnan(WAP) else WAP
+        MAP = average_precision_score(target, pred, average='macro')
+        MAP = 0 if np.isnan(MAP) else MAP
+        mean_AP = mAP(target, pred)
+        mean_AP = 0 if np.isnan(mean_AP) else mean_AP
     return {
         'accuracy': accuracy_score(y_true=target, y_pred=pred_bool),
-        'average_precision': average_precision,
+        'WAP': WAP,
+        'MAP': MAP,
         "hamming_loss": hamming_loss(y_true=target, y_pred=pred_bool),
-        "mean_av_precision": map_stats['mAP']
-        # "average_precision_map_mlmetrics": ml_metrics.mapk(target, pred)
+        "mAP": mean_AP
     }
 
 def load_data_coco():
@@ -118,7 +151,7 @@ def load_data_nus(train_path, test_path):
 
 LEARNING_RATE = WEIGHT_DECAY = 1e-4
 MAX_EPOCH_NUMBER = 70
-BATCH_SIZE = 90
+BATCH_SIZE = 30
 IMAGE_PATH = 'nus_images'
 META_PATH = 'nus_wide'
 
@@ -224,7 +257,7 @@ def main():
                 result['epoch'] = i
                 result['losses'] = batch_loss_value
                 batch_losses.append(result)
-                train_epoch.set_postfix(train_loss=batch_loss_value, train_acc=result['accuracy'])
+                train_epoch.set_postfix(train_loss=batch_loss_value, train_acc=result['accuracy'], mAP=result['mAP'])
 
         with tqdm(test_dataloader, unit="batch") as test_epoch:
             test_epoch.set_description(f"Epoch: {i}")
@@ -246,7 +279,7 @@ def main():
                     val_metrics['epoch'] = i
                     val_metrics['losses'] = batch_loss_test
                     batch_losses_test.append(val_metrics)
-                    test_epoch.set_postfix(test_loss=batch_loss_test, test_acc=val_metrics['accuracy'])
+                    test_epoch.set_postfix(test_loss=batch_loss_test, test_acc=val_metrics['accuracy'], mAP=val_metrics['mAP'])
 
     time_in_hours = datetime.now().strftime("%Y_%m_%d_%H")
     time_in_minutes = datetime.now().strftime("%H_%M")

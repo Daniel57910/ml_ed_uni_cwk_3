@@ -76,7 +76,7 @@ class NusDataset:
         if self.transforms is not None:
             img = self.transforms(img)
 
-        if img.shape != (3, 180, 180):
+        if img.shape != (3, 500, 500):
             print(f"Data at {img_path} is corrupted, skipping")
             return None
 

@@ -11,14 +11,17 @@ import pdb
 class AttModelV1(nn.Module):
     def __init__(self, n_classes) -> None:
         super().__init__()
-        self.conv_1 = self._make_layer(3, 64, 3)
-        self.res_block_1 = BasicBlock(64)
-        self.att_block_1 = AttentionBasicBlock(64, 249)
-        self.res_block_2 = BasicBlock(64, 128)
-        self.att_block_2 = AttentionBasicBlock(128, 249)
-        self.res_block_3 = BasicBlock(128, 256)
+        self.conv_1 = self._make_layer(3, 32, 3)
+        self.res_block_1 = BasicBlock(32)
+        self.att_block_1 = AttentionBasicBlock(32, 249)
+        self.res_block_2 = BasicBlock(32, 64)
+        self.att_block_2 = AttentionBasicBlock(64, 249)
+        self.res_block_3 = BasicBlock(64)
         self.av_pool_layer = nn.AvgPool2d(kernel_size=3)
-        self.n_classes = n_classes
+        self.final_layer = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(in_features=440896, out_features=n_classes)
+        )
         self._initialize_weights()
 
     def _make_layer(self, input_channels, out_features, kernel_size):
@@ -53,12 +56,7 @@ class AttModelV1(nn.Module):
         res_block_3 = self.res_block_3(att_layer_2)
 
         pool_layer = self.av_pool_layer(res_block_3)
-        flat_layer = nn.Flatten()(pool_layer)
-        return nn.Linear(
-            in_features=flat_layer.shape[1],
-            out_features=self.n_classes
-        )(flat_layer)
+        return self.final_layer(pool_layer)
 
-
-model = AttModelV1(81)
-print(summary(model, (3, 500, 500)))
+# model = AttModelV1(81)
+# print(summary(model, (3, 500, 500)))

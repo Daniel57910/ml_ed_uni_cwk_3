@@ -49,15 +49,14 @@ class AttentionBasicBlock(nn.Module):
             BasicBlock(channel_num)
         )
 
-        self.softmax = nn.Sigmoid()
+        self.sigmoid = nn.Sigmoid()
         self.upsample = nn.UpsamplingBilinear2d(size=(upsample_size, upsample_size))
 
     def forward(self, x):
         out = self.residual_one(x)
         trunk = self.trunk(x)
         out_pool = nn.MaxPool2d(kernel_size=3, stride=2)(out)
-        softmax = self.softmax(out_pool)
-        softmax = nn.Dropout(p=0.3)(softmax)
-        upsample = self.upsample(softmax)
+        sigmoid = self.sigmoid(out_pool)
+        upsample = self.upsample(sigmoid)
         trunk_combine = (1 + upsample) * trunk
         return trunk_combine
