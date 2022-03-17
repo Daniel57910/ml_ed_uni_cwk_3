@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from basic_layers_v1 import BasicBlock, AttentionBasicBlock
 from torchvision import models
 import torch.nn.functional as F
-# from torchsummary import summary
+from torchsummary import summary
 import pdb
 
 class AttModelV1(nn.Module):
@@ -16,17 +16,20 @@ class AttModelV1(nn.Module):
         self.res_block_1 = BasicBlock(64)
         self.att_block_1 = AttentionBasicBlock(64, 249)
 
-        self.res_block_2 = BasicBlock(64, 32)
-        self.att_block_2 = AttentionBasicBlock(32, 249)
+        self.res_block_2 = BasicBlock(64, 64)
+        self.att_block_2 = AttentionBasicBlock(64, 249)
 
-        self.res_block_3 = BasicBlock(32, 16)
+        self.res_block_3 = BasicBlock(64, 32)
+        # self.att_block_3 = AttentionBasicBlock(32, 249)
+
+        # self.res_block_4 = BasicBlock(32, 32)
 
         self.av_pool_layer = nn.AvgPool2d(kernel_size=3)
 
         self.linear_layer_1 = nn.Sequential(
             nn.Flatten(start_dim=1),
             nn.Linear(
-                in_features=110224,
+                in_features=220448,
                 out_features=256
             ),
             nn.Dropout(),
@@ -41,12 +44,10 @@ class AttModelV1(nn.Module):
             nn.Dropout(),
             nn.ReLU(),
         )
-        self.activation_layer = nn.Sequential(
-            nn.Linear(
+        self.activation_layer = nn.Linear(
                 in_features=128,
                 out_features=n_classes
             )
-        )
 
         self._initialize_weights()
         self.n_classes = n_classes
@@ -82,6 +83,9 @@ class AttModelV1(nn.Module):
         att_layer_2 = self.att_block_2(res_layer_2)
 
         res_block_3 = self.res_block_3(att_layer_2)
+        # att_block_3 = self.att_block_3(res_block_3)
+
+        # res_block_4 = self.res_block_4(att_block_3)
 
         av_pool_layer = self.av_pool_layer(res_block_3)
 

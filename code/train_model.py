@@ -151,7 +151,7 @@ def load_data_nus(train_path, test_path):
 
 LEARNING_RATE = WEIGHT_DECAY = 1e-4
 MAX_EPOCH_NUMBER = 70
-BATCH_SIZE = 30
+BATCH_SIZE = 20
 IMAGE_PATH = 'nus_images'
 META_PATH = 'nus_wide'
 
