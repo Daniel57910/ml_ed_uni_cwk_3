@@ -7,7 +7,7 @@ import numpy as np
 import pdb
 
 class BasicBlock(nn.Module):
-    def __init__(self, channel_input, channel_output=None):
+    def __init__(self, channel_input, channel_output=None, dropout_rate=0.5):
 
         if not channel_output:
             channel_output = channel_input
@@ -16,18 +16,18 @@ class BasicBlock(nn.Module):
         self.conv_block1 = nn.Sequential(
             nn.Conv2d(channel_input, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
-            nn.ReLU(),
+            nn.ReLU()
         )
         self.conv_block2 = nn.Sequential(
             nn.Conv2d(channel_output, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
-            nn.ReLU(),
+            nn.ReLU()
         )
 
         if channel_output:
             self.residual_block = nn.Sequential(
                 nn.Conv2d(channel_input, channel_output, 3, padding=1),
-                nn.BatchNorm2d(channel_output),
+                nn.BatchNorm2d(channel_output)
             )
 
     def forward(self, x):
@@ -56,7 +56,7 @@ class AttentionBasicBlock(nn.Module):
         out = self.residual_one(x)
         trunk = self.trunk(x)
         out_pool = nn.MaxPool2d(kernel_size=3, stride=2)(out)
-        sigmoid = self.sigmoid(out_pool)
-        upsample = self.upsample(sigmoid)
+        softmax = self.sigmoid(out_pool)
+        upsample = self.upsample(softmax)
         trunk_combine = (1 + upsample) * trunk
         return trunk_combine

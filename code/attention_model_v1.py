@@ -5,24 +5,51 @@ import torch.nn.functional as F
 from basic_layers_v1 import BasicBlock, AttentionBasicBlock
 from torchvision import models
 import torch.nn.functional as F
-from torchsummary import summary
+# from torchsummary import summary
 import pdb
 
 class AttModelV1(nn.Module):
     def __init__(self, n_classes) -> None:
         super().__init__()
-        self.conv_1 = self._make_layer(3, 32, 3)
-        self.res_block_1 = BasicBlock(32)
-        self.att_block_1 = AttentionBasicBlock(32, 249)
-        self.res_block_2 = BasicBlock(32, 64)
-        self.att_block_2 = AttentionBasicBlock(64, 249)
-        self.res_block_3 = BasicBlock(64)
+        self.conv_1 = self._make_layer(3, 64, 3)
+
+        self.res_block_1 = BasicBlock(64)
+        self.att_block_1 = AttentionBasicBlock(64, 249)
+
+        self.res_block_2 = BasicBlock(64, 32)
+        self.att_block_2 = AttentionBasicBlock(32, 249)
+
+        self.res_block_3 = BasicBlock(32, 16)
+
         self.av_pool_layer = nn.AvgPool2d(kernel_size=3)
-        self.final_layer = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(in_features=440896, out_features=n_classes)
+
+        self.linear_layer_1 = nn.Sequential(
+            nn.Flatten(start_dim=1),
+            nn.Linear(
+                in_features=110224,
+                out_features=256
+            ),
+            nn.Dropout(),
+            nn.ReLU()
         )
+
+        self.linear_layer_2 = nn.Sequential(
+            nn.Linear(
+                in_features=256,
+                out_features=128
+            ),
+            nn.Dropout(),
+            nn.ReLU(),
+        )
+        self.activation_layer = nn.Sequential(
+            nn.Linear(
+                in_features=128,
+                out_features=n_classes
+            )
+        )
+
         self._initialize_weights()
+        self.n_classes = n_classes
 
     def _make_layer(self, input_channels, out_features, kernel_size):
         return nn.Sequential(*[
@@ -47,16 +74,22 @@ class AttModelV1(nn.Module):
 
     def forward(self, x):
         output_1 = self.conv_1(x)
+
         res_layer_1 = self.res_block_1(output_1)
-
         att_layer_1 = self.att_block_1(res_layer_1)
-        res_layer_2 = self.res_block_2(att_layer_1)
 
+        res_layer_2 = self.res_block_2(att_layer_1)
         att_layer_2 = self.att_block_2(res_layer_2)
+
         res_block_3 = self.res_block_3(att_layer_2)
 
-        pool_layer = self.av_pool_layer(res_block_3)
-        return self.final_layer(pool_layer)
+        av_pool_layer = self.av_pool_layer(res_block_3)
+
+        linear_layer_1 = self.linear_layer_1(av_pool_layer)
+        linear_layer_2 = self.linear_layer_2(linear_layer_1)
+
+        activation_layer = self.activation_layer(linear_layer_2)
+        return activation_layer
 
 # model = AttModelV1(81)
 # print(summary(model, (3, 500, 500)))

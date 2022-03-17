@@ -14,6 +14,14 @@ results_directory = args.d
 results_files = os.listdir(results_directory)
 training_csv = next(f for f in results_files if 'training' in f)
 validation_csv = next(f for f in results_files if 'validation' in f)
+
+if 'nus' in training_csv and 'nus' in validation_csv:
+    project = 'Nus'
+elif 'coco' in training_csv and 'coco' in validation_csv:
+    project = 'Coco'
+else:
+    raise Exception("Ensure results either focusing on Nus or Coco")
+
 df_train_path, df_val_path = os.path.join(results_directory, training_csv), os.path.join(results_directory, validation_csv)
 print(df_train_path, df_val_path)
 
@@ -36,17 +44,18 @@ df_combined = pd.merge(
     on='epoch'
 )
 
-print(df_combined[['accuracy_train', 'accuracy_val', 'losses_train', 'losses_val']])
+print(df_combined.columns)
+print(df_combined[['mAP_train', 'mAP_val', 'losses_train', 'losses_val']])
 
 fig, axs = plt.subplots(1, 2)
 plotting_meta = [
     {
         "cols": ['losses_train', 'losses_val'],
-        "title": "BCE on training and validation dataset"
+        "title": f"BCE on {project} training and validation dataset"
     },
     {
-        "cols":["accuracy_train", "accuracy_val"],
-        "title": "Accuracy score on training and validation dataset"
+        "cols":["mAP_train", "mAP_val"],
+        "title": f"Mean Average Precision on {project} training and validation dataset"
     }
 ]
 for ax, meta in zip(axs.flatten(), plotting_meta):
