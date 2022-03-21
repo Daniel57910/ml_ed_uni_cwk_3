@@ -18,6 +18,7 @@ def main():
     loaded_model.to(device)
 
     children = list(loaded_model.children())
+    print(len(children))
     for c in children:
         print(type(c))
 
