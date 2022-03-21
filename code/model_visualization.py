@@ -14,7 +14,7 @@ def main():
     model_path = os.path.join(CORE_PATH, dataset + "_models", model)
     loaded_model = torch.load(model_path)
     print("Loaded Model")
-    print(loaded_model)
+    print(loaded_model.features)
 
 
 main()
