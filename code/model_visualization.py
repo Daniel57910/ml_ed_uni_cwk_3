@@ -19,7 +19,7 @@ def main():
 
     children = list(loaded_model.children())
     for c in children:
-        print(c)
+        print(type(c))
 
 
 main()
