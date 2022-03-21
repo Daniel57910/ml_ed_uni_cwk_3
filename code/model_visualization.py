@@ -17,7 +17,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     loaded_model.to(device)
 
-    children = list(model.children())
+    children = list(loaded_model.children())
     for c in children:
         print(c)
 
