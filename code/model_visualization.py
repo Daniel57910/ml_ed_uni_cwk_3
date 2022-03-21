@@ -3,6 +3,7 @@ import argparse
 import os
 import torch.distributed as dist
 CORE_PATH = "results"
+import pdb
 def main():
     dist.init_process_group(backend='nccl')
     parser = argparse.ArgumentParser()
@@ -13,6 +14,7 @@ def main():
 
     model_path = os.path.join(CORE_PATH, dataset + "_models", model)
     loaded_model = torch.load(model_path)
+    pdb.set_trace()
     print("Loaded Model")
     print(loaded_model.features)
 
