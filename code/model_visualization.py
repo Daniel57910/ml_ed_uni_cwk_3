@@ -14,9 +14,12 @@ def main():
 
     model_path = os.path.join(CORE_PATH, dataset + "_models", model)
     loaded_model = torch.load(model_path)
-    pdb.set_trace()
-    print("Loaded Model")
-    print(loaded_model.features)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    loaded_model.to(device)
+
+    children = list(model.children())
+    for c in children:
+        print(c)
 
 
 main()
