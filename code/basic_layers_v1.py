@@ -16,21 +16,18 @@ class BasicBlock(nn.Module):
         self.conv_block1 = nn.Sequential(
             nn.Conv2d(channel_input, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
-            nn.ReLU(),
-            nn.Dropout(p=0.2),
+            nn.ReLU()
         )
         self.conv_block2 = nn.Sequential(
             nn.Conv2d(channel_output, channel_output, 3, padding=1),
             nn.BatchNorm2d(channel_output),
-            nn.ReLU(),
-            nn.Dropout(p=0.2)
+            nn.ReLU()
         )
 
         if channel_output:
             self.residual_block = nn.Sequential(
                 nn.Conv2d(channel_input, channel_output, 3, padding=1),
-                nn.BatchNorm2d(channel_output),
-                nn.Dropout(p=0.2)
+                nn.BatchNorm2d(channel_output)
             )
 
     def forward(self, x):
@@ -39,7 +36,7 @@ class BasicBlock(nn.Module):
         out = self.conv_block2(out)
         if out.shape != residual.shape:
             residual = self.residual_block(residual)
-            out = out + residual
+        out = out + residual
         return out
 
 

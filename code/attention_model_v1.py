@@ -20,9 +20,6 @@ class AttModelV1(nn.Module):
         self.att_block_2 = AttentionBasicBlock(64, 249)
 
         self.res_block_3 = BasicBlock(64, 32)
-        # self.att_block_3 = AttentionBasicBlock(32, 249)
-
-        # self.res_block_4 = BasicBlock(32, 32)
 
         self.av_pool_layer = nn.AvgPool2d(kernel_size=3)
 
@@ -83,9 +80,6 @@ class AttModelV1(nn.Module):
         att_layer_2 = self.att_block_2(res_layer_2)
 
         res_block_3 = self.res_block_3(att_layer_2)
-        # att_block_3 = self.att_block_3(res_block_3)
-
-        # res_block_4 = self.res_block_4(att_block_3)
 
         av_pool_layer = self.av_pool_layer(res_block_3)
 
