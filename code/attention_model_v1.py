@@ -19,14 +19,14 @@ class AttModelV1(nn.Module):
         self.res_block_2 = BasicBlock(64, 64)
         self.att_block_2 = AttentionBasicBlock(64, 249)
 
-        self.res_block_3 = BasicBlock(64, 32)
+        self.res_block_3 = BasicBlock(64, 64)
 
         self.av_pool_layer = nn.AvgPool2d(kernel_size=3)
 
         self.linear_layer_1 = nn.Sequential(
             nn.Flatten(start_dim=1),
             nn.Linear(
-                in_features=220448,
+                in_features=440896,
                 out_features=256
             ),
             nn.Dropout(),
@@ -89,5 +89,3 @@ class AttModelV1(nn.Module):
         activation_layer = self.activation_layer(linear_layer_2)
         return activation_layer
 
-# model = AttModelV1(81)
-# print(summary(model, (3, 500, 500)))
