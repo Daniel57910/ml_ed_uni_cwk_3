@@ -81,7 +81,7 @@ if not os.path.exists(img_folder):
                 if not is_within_directory(path, member_path):
                     raise Exception("Attempted Path Traversal in Tar File")
         
-            tar.extractall(path, members, numeric_owner) 
+            tar.extractall(path, members, numeric_owner=numeric_owner) 
             
         
         safe_extract(tar_ref, os.path.dirname(img_folder))
